@@ -1,16 +1,62 @@
-# Compiled class file
-*.class
+# Arquivos do Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# Log file
+# Arquivos do IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+# Arquivos do NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Arquivos do VS Code
+.vscode/
+.devcontainer/
+
+# Arquivos de Log
 *.log
 
-# BlueJ files
+# Arquivos temporários, como .tmp, .swp, .bak, etc
+*~
+*.tmp
+*.temp
+*.swp
+*.bak
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de ambiente
+*.env
+
+# Arquivos de configuração
+*.cfg
+*.conf
+*.yml
+!/docker-compose.yml
+
+# Arquivo de classe compilado
+*.class
+
+# Arquivos do BlueJ
 *.ctxt
 
-# Mobile Tools for Java (J2ME)
+# Ferramentas móveis para Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# Arquivos de pacote
 *.jar
 *.war
 *.nar
@@ -19,6 +65,6 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Logs de falha da máquina virtual
 hs_err_pid*
 replay_pid*
