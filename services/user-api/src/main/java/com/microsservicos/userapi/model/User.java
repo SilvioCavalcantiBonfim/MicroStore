@@ -1,6 +1,7 @@
 package com.microsservicos.userapi.model;
 
 import java.time.LocalDateTime;
+
 import com.microsservicos.userapi.dto.UserDto;
 
 import jakarta.persistence.Entity;

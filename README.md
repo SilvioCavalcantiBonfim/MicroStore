@@ -23,6 +23,8 @@ Para garantir que estamos usando as tecnologias mais recentes, as versões do Sp
 
 - Java 21
 - Spring Boot 3.2.0
+- PostgreSQL 15.5
+- Flyway 9.22.3
 - Kubernetes 1.28
 - Docker 24.0.7
 
