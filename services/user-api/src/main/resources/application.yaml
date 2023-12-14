@@ -1,0 +1,16 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    url: jdbc:postgresql://database:5432/dev
+    username: postgres
+    password: postgres
+  flyway:
+    schemas: users
+  jpa:
+    properties:
+      hibernate:
+        default_schema: users
