@@ -1,0 +1,25 @@
+GET http://localhost:8082/shopping HTTP/1.1
+
+###
+POST http://localhost:8082/shopping HTTP/1.1
+Content-Type: application/json
+
+{
+  "userIdentifier":"teste",
+  "total": 449.0,
+  "date": "2019-11-17T21:04:19.828+0000",
+  "items":[
+    {
+      "productIdentifier":"a1",
+      "price":"100"
+    },
+    {
+      "productIdentifier":"a2",
+      "price":"299"
+    },
+    {
+      "productIdentifier":"a3",
+      "price":"50"
+    }
+  ]
+}

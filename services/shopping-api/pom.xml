@@ -15,11 +15,33 @@
 	<description>Este projeto é utilizado para o cadastro de compras na aplicação. Para realizar uma compra, a shopping-api recebe informações sobre o usuário que está fazendo a compra e uma lista de produtos, e todos esses dados precisam ser validados na user-api e na product-api.</description>
 	<properties>
 		<java.version>21</java.version>
+		<flyway.version>9.22.3</flyway.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId> 
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>${flyway.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
 
 		<dependency>

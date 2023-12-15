@@ -1,0 +1,17 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    url: jdbc:postgresql://database:5432/dev
+    username: postgres
+    password: postgres
+  flyway:
+    schemas: shopping
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        default_schema: shopping
