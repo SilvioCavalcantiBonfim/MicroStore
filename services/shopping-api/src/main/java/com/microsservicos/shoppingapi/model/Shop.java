@@ -3,7 +3,7 @@ package com.microsservicos.shoppingapi.model;
 import java.util.Date;
 import java.util.List;
 
-import com.microsservicos.shoppingapi.dto.ShopDto;
+import com.microsservicos.dto.ShopDto;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.ElementCollection;

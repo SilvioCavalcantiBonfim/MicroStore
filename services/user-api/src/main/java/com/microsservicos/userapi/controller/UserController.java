@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microsservicos.userapi.dto.UserDto;
+import com.microsservicos.dto.UserDto;
 import com.microsservicos.userapi.service.UserService;
 
 
@@ -41,7 +41,7 @@ public class UserController {
   }
 
   @GetMapping("/cpf/{cpf}")
-  public UserDto getUserForCPF(@PathVariable String cpf) {
+  public List<UserDto> getUserForCPF(@PathVariable String cpf) {
     return userService.findByCpf(cpf);
   }
 

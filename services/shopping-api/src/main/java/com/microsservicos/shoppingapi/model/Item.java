@@ -1,6 +1,6 @@
 package com.microsservicos.shoppingapi.model;
 
-import com.microsservicos.shoppingapi.dto.ItemDto;
+import com.microsservicos.dto.ItemDto;
 
 import jakarta.persistence.Embeddable;
 

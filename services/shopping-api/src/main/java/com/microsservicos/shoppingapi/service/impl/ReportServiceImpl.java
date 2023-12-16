@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.microsservicos.shoppingapi.dto.ReportDto;
-import com.microsservicos.shoppingapi.dto.ShopDto;
+import com.microsservicos.dto.ReportDto;
+import com.microsservicos.dto.ShopDto;
 import com.microsservicos.shoppingapi.repository.ShopRepository;
 import com.microsservicos.shoppingapi.service.ReportService;
+import com.microsservicos.shoppingapi.util.ShopToShopDtoConverter;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -21,7 +22,7 @@ public class ReportServiceImpl implements ReportService {
   
   @Override
   public List<ShopDto> getShopByFilters(Date start, Date end, Float min) {
-    return shopRepository.getShopByFilters(start, end, min).stream().map(ShopDto::convert).toList();
+    return shopRepository.getShopByFilters(start, end, min).stream().map(ShopToShopDtoConverter::convert).toList();
   }
   
   @Override

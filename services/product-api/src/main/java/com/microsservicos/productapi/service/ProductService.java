@@ -2,7 +2,7 @@ package com.microsservicos.productapi.service;
 
 import java.util.List;
 
-import com.microsservicos.productapi.dto.ProductDto;
+import com.microsservicos.dto.ProductDto;
 
 public interface ProductService {
   List<ProductDto> getAll();

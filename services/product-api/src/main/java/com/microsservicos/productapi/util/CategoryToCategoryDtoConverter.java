@@ -1,10 +1,11 @@
-package com.microsservicos.productapi.dto;
+package com.microsservicos.productapi.util;
 
+import com.microsservicos.dto.CategoryDto;
 import com.microsservicos.productapi.model.Category;
 
 import jakarta.validation.constraints.NotNull;
 
-public record CategoryDto(
+public record CategoryToCategoryDtoConverter(
   @NotNull long id, 
   String name) {
 

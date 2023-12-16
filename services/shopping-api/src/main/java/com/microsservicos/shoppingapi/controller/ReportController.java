@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microsservicos.shoppingapi.dto.ReportDto;
-import com.microsservicos.shoppingapi.dto.ShopDto;
+import com.microsservicos.dto.ReportDto;
+import com.microsservicos.dto.ShopDto;
 import com.microsservicos.shoppingapi.service.ReportService;
 
 @RestController

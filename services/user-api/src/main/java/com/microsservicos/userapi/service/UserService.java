@@ -2,7 +2,7 @@ package com.microsservicos.userapi.service;
 
 import java.util.List;
 
-import com.microsservicos.userapi.dto.UserDto;
+import com.microsservicos.dto.UserDto;
 
 public interface UserService {
   List<UserDto> getAll();
@@ -11,7 +11,7 @@ public interface UserService {
 
   UserDto save(UserDto userDto);
 
-  UserDto findByCpf(String cpf);
+  List<UserDto> findByCpf(String cpf);
 
   List<UserDto> queryByName(String name);
 

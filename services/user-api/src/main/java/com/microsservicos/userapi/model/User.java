@@ -2,8 +2,7 @@ package com.microsservicos.userapi.model;
 
 import java.time.LocalDateTime;
 
-import com.microsservicos.userapi.dto.UserDto;
-
+import com.microsservicos.dto.UserDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

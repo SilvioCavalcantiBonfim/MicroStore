@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microsservicos.productapi.dto.ProductDto;
+import com.microsservicos.dto.ProductDto;
 import com.microsservicos.productapi.exception.ProductNotFoundException;
 import com.microsservicos.productapi.service.ProductService;
 

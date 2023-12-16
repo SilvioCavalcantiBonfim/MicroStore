@@ -5,10 +5,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.microsservicos.userapi.dto.UserDto;
+import com.microsservicos.dto.UserDto;
 import com.microsservicos.userapi.model.User;
 import com.microsservicos.userapi.repository.UserRepository;
 import com.microsservicos.userapi.service.UserService;
+import com.microsservicos.userapi.util.UserToUserDtoConverter;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,14 +23,14 @@ public class UserServiceImpl implements UserService {
   @Override
   public List<UserDto> getAll() {
     List<User> all = userRepository.findAll();
-    return all.stream().map(UserDto::convert).toList();
+    return all.stream().map(UserToUserDtoConverter::convert).toList();
   }
 
   @Override
   public UserDto findById(Long id) {
     Optional<User> user = userRepository.findById(id);
     if (user.isPresent()) {
-      return UserDto.convert(user.get());
+      return UserToUserDtoConverter.convert(user.get());
     }
     return null;
   }
@@ -37,17 +38,17 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserDto save(UserDto userDto) {
     User user = userRepository.save(User.convert(userDto));
-    return UserDto.convert(user);
+    return UserToUserDtoConverter.convert(user);
   }
 
   @Override
-  public UserDto findByCpf(String cpf) {
-    return UserDto.convert(userRepository.findByCpf(cpf));
+  public List<UserDto> findByCpf(String cpf) {
+    return userRepository.findByCpf(cpf).stream().map(UserToUserDtoConverter::convert).toList();
   }
   
   @Override
   public List<UserDto> queryByName(String name) {
-    return userRepository.queryByNameLike(name).stream().map(UserDto::convert).toList();
+    return userRepository.queryByNameLike(name).stream().map(UserToUserDtoConverter::convert).toList();
   }
 
   @Override

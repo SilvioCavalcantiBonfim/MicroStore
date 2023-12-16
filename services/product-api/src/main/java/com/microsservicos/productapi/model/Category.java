@@ -1,7 +1,6 @@
 package com.microsservicos.productapi.model;
 
-import com.microsservicos.productapi.dto.CategoryDto;
-
+import com.microsservicos.dto.CategoryDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

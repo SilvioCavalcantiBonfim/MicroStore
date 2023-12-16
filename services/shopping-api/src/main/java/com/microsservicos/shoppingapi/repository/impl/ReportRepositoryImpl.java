@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
-import com.microsservicos.shoppingapi.dto.ReportDto;
+import com.microsservicos.dto.ReportDto;
 import com.microsservicos.shoppingapi.model.Shop;
 import com.microsservicos.shoppingapi.repository.ReportRepository;
 
@@ -41,10 +41,10 @@ public class ReportRepositoryImpl implements ReportRepository {
     StringBuilder str = new StringBuilder();
     str.append("select s from shop s where s.date >= :start");
     if (end != null) {
-      str.append("and s.date <= :end");
+      str.append(" and s.date <= :end");
     }
     if (min != null) {
-      str.append("and s.total <= :min");
+      str.append(" and s.total <= :min");
     }
     return str;
   }

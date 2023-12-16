@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<flyway.version>9.22.3</flyway.version>
+		<utils.version>0.0.1-SNAPSHOT</utils.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -43,6 +44,12 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.microsservicos</groupId>
+			<artifactId>utils</artifactId>
+			<version>${utils.version}</version>
 		</dependency>
 
 		<dependency>

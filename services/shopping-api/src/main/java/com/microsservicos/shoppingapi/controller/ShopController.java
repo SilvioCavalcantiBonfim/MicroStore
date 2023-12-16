@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microsservicos.shoppingapi.dto.ShopDto;
+import com.microsservicos.dto.ShopDto;
 import com.microsservicos.shoppingapi.service.ShopService;
 
 import jakarta.validation.Valid;

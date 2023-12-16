@@ -2,7 +2,7 @@ package com.microsservicos.shoppingapi.service;
 
 import java.util.List;
 
-import com.microsservicos.shoppingapi.dto.ShopDto;
+import com.microsservicos.dto.ShopDto;
 
 public interface ShopService {
   List<ShopDto> getAll();

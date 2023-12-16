@@ -5,10 +5,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.microsservicos.productapi.dto.ProductDto;
+import com.microsservicos.dto.ProductDto;
 import com.microsservicos.productapi.model.Product;
 import com.microsservicos.productapi.repository.ProductRepository;
 import com.microsservicos.productapi.service.ProductService;
+import com.microsservicos.productapi.util.ProductToProductDtoConverter;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -21,19 +22,19 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public List<ProductDto> getAll() {
-    return productRepository.findAll().stream().map(ProductDto::convert).toList();
+    return productRepository.findAll().stream().map(ProductToProductDtoConverter::convert).toList();
   }
 
   @Override
   public List<ProductDto> getProductByCategoryId(Long id) {
-    return productRepository.getByCategory(id).stream().map(ProductDto::convert).toList();
+    return productRepository.getByCategory(id).stream().map(ProductToProductDtoConverter::convert).toList();
   }
 
   @Override
   public ProductDto findByProductIdentifier(String productIdentifier) {
     Product product = productRepository.findByProductIdentifier(productIdentifier);
     if (product != null) {
-      return ProductDto.convert(product);
+      return ProductToProductDtoConverter.convert(product);
     }
     return null;
   }
@@ -41,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
   @Override
   public ProductDto save(ProductDto productDto) {
     Product product = productRepository.save(Product.convert(productDto));
-    return ProductDto.convert(product);
+    return ProductToProductDtoConverter.convert(product);
   }
 
   @Override

@@ -5,24 +5,20 @@ POST http://localhost:8082/shopping HTTP/1.1
 Content-Type: application/json
 
 {
-  "userIdentifier":"teste 1",
-  "total": 449.0,
+  "userIdentifier":"123",
+  "total": 0,
   "date": "2019-11-17T21:04:19.828+0000",
   "items":[
     {
-      "productIdentifier":"a1",
-      "price":"100"
+      "productIdentifier":"video-game",
+      "price": 2000.0
     },
     {
-      "productIdentifier":"a2",
+      "productIdentifier":"tv",
       "price":"299"
-    },
-    {
-      "productIdentifier":"a3",
-      "price":"50"
     }
   ]
 }
 
 ###
-GET http://localhost:8082/shopping/search?start=19/12/2023 HTTP/1.1
+GET http://localhost:8082/shopping/search?start=15/12/2023&end=16/12/2023 HTTP/1.1

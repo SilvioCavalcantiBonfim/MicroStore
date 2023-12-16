@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.microsservicos.dto.UserDto;
 import com.microsservicos.userapi.model.User;
+import com.microsservicos.userapi.util.UserToUserDtoConverter;
 
 public class UserDtoTest {
   @Test
@@ -24,7 +26,7 @@ public class UserDtoTest {
     user.setPhone("1234-3454");
     user.setRegister(cadastro);
 
-    Assertions.assertEquals(expected, UserDto.convert(user));
+    Assertions.assertEquals(expected, UserToUserDtoConverter.convert(user));
 
   }
 }
