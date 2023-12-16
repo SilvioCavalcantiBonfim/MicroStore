@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.microsservicos.shoppingapi.model.Shop;
 
 @Repository
-public interface ShopRepository extends JpaRepository<Shop, Long> {
+public interface ShopRepository extends JpaRepository<Shop, Long>, ReportRepository {
 
   List<Shop> findAllByUserIdentifier(String userIdentifier);
 
