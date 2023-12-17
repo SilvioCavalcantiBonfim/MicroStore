@@ -34,4 +34,4 @@ Content-Type: application/json
 GET http://localhost:8081/product/tv HTTP/1.1
 
 ###
-DELETE http://localhost:8081/product/1 HTTP/1.1
+DELETE http://localhost:8081/product/tv HTTP/1.1

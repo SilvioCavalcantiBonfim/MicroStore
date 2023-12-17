@@ -3,6 +3,8 @@ package com.microsservicos.userapi.model;
 import java.time.LocalDateTime;
 
 import com.microsservicos.dto.UserDto;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +19,7 @@ public class User {
 
   private String name;
 
+  @Column(unique = true)
   private String cpf;
 
   private String address;

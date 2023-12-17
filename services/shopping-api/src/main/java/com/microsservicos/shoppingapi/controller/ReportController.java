@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microsservicos.dto.ReportDto;
@@ -24,6 +26,7 @@ public class ReportController {
   }
 
   @GetMapping("/search")
+  @ResponseStatus(HttpStatus.OK)
   public List<ShopDto> getShopsByFilter(
       @RequestParam(name = "start", required = true) 
       @DateTimeFormat(pattern = "dd/MM/yyyy") 
@@ -37,6 +40,7 @@ public class ReportController {
   }
 
   @GetMapping("/report")
+  @ResponseStatus(HttpStatus.OK)
   public ReportDto getReportByDate(
       @RequestParam(name = "start", required = true) 
       @DateTimeFormat(pattern = "dd/MM/yyyy") 

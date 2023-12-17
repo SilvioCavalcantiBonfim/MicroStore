@@ -11,9 +11,9 @@ public interface UserService {
 
   UserDto save(UserDto userDto);
 
-  List<UserDto> findByCpf(String cpf);
+  UserDto findByCpf(String cpf);
 
   List<UserDto> queryByName(String name);
 
-  boolean deleteUser(long id);
+  void deleteUser(long id);
 }

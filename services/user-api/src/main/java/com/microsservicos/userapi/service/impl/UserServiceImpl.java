@@ -6,6 +6,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.microsservicos.dto.UserDto;
+import com.microsservicos.exception.CpfAlreadyRegisteredException;
+import com.microsservicos.exception.InvalidCpfLengthException;
+import com.microsservicos.exception.UserNotFoundException;
 import com.microsservicos.userapi.model.User;
 import com.microsservicos.userapi.repository.UserRepository;
 import com.microsservicos.userapi.service.UserService;
@@ -37,13 +40,28 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserDto save(UserDto userDto) {
+    if (userDto.cpf().length() != 11) {
+      throw new InvalidCpfLengthException();
+    }
+
+    if (userRepository.existsByCpf(userDto.cpf())) {
+      throw new CpfAlreadyRegisteredException();
+    }
+
     User user = userRepository.save(User.convert(userDto));
     return UserToUserDtoConverter.convert(user);
   }
 
   @Override
-  public List<UserDto> findByCpf(String cpf) {
-    return userRepository.findByCpf(cpf).stream().map(UserToUserDtoConverter::convert).toList();
+  public UserDto findByCpf(String cpf) {
+    if (cpf.length() != 11) {
+      throw new InvalidCpfLengthException();
+    }
+    Optional<User> user = userRepository.findByCpf(cpf);
+    if (user.isPresent()) {
+      return UserToUserDtoConverter.convert(user.get());
+    }
+    throw new UserNotFoundException();
   }
   
   @Override
@@ -52,12 +70,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean deleteUser(long id) {
+  public void deleteUser(long id) {
     Optional<User> user = userRepository.findById(id);
-    if (user.isPresent()) {
-      userRepository.delete(user.get());
-      return true;
+    if (!user.isPresent()) {
+      throw new UserNotFoundException();
     }
-    return false;
+    userRepository.delete(user.get());
   }
 }

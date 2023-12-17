@@ -1,6 +1,5 @@
 package com.microsservicos.shoppingapi.repository.impl;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class ReportRepositoryImpl implements ReportRepository {
 
     Object[] result = (Object[]) query.getSingleResult();
 
-    return new ReportDto((BigInteger) result[0], (Double) result[1],  (Double) result[2]);
+    return new ReportDto((Long) result[0], (Double) result[1],  (Double) result[2]);
   }
 
 }
