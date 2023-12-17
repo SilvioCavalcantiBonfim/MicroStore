@@ -30,6 +30,8 @@ public class User {
   
   private LocalDateTime register;
 
+  private String key;
+
   public static User convert(UserDto userDto){
     User user = new User();
     user.setName(userDto.name());
@@ -97,5 +99,15 @@ public class User {
   public void setRegister(LocalDateTime register) {
     this.register = register;
   }
+
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  
   
 }

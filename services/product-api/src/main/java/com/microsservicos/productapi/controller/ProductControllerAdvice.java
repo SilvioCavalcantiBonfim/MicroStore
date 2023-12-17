@@ -35,6 +35,6 @@ public class ProductControllerAdvice {
         .collect(Collectors.joining(", "));
     message.append(fildsList);
     message.append(".");
-    return new ErrorDto(HttpStatus.NOT_FOUND.value(), message.toString(), new Date());
+    return new ErrorDto(HttpStatus.BAD_REQUEST.value(), message.toString(), new Date());
   }
 }

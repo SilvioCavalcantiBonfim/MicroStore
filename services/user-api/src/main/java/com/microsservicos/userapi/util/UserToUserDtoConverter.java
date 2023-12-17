@@ -7,7 +7,7 @@ public class UserToUserDtoConverter {
 
   public static UserDto convert(User user) {
     UserDto userDto = new UserDto(user.getName(), user.getCpf(), user.getAddress(), user.getEmail(), user.getPhone(),
-        user.getRegister());
+        user.getRegister(), user.getKey());
     return userDto;
   }
 }

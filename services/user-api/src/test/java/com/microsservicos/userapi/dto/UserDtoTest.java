@@ -16,7 +16,7 @@ public class UserDtoTest {
     
     LocalDateTime cadastro = LocalDateTime.now();
     
-    UserDto expected = new UserDto("marcela","123","Rua abc","marcela@email.com","1234-3454", cadastro);
+    UserDto expected = new UserDto("marcela","123","Rua abc","marcela@email.com","1234-3454", cadastro, "123");
 
     User user = new User();
     user.setName("marcela");
@@ -25,6 +25,7 @@ public class UserDtoTest {
     user.setEmail("marcela@email.com");
     user.setPhone("1234-3454");
     user.setRegister(cadastro);
+    user.setKey("123");
 
     Assertions.assertEquals(expected, UserToUserDtoConverter.convert(user));
 

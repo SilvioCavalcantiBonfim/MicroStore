@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,7 +53,7 @@ public class ShopController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ShopDto createShop(@Valid @RequestBody ShopDto shopDto){
-    return shopService.save(shopDto);
+  public ShopDto createShop(@Valid @RequestBody ShopDto shopDto, @RequestHeader(name = "key", required = true) String key){
+    return shopService.save(shopDto, key);
   }
 }

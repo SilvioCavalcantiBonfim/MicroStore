@@ -1,16 +1,13 @@
 server:
   port: 8080
 spring:
-  cache:
-    jcache:
-      config: classpath:ehcache.xml
   datasource:
     hikari:
       connectionTimeout: 20000
       maximumPoolSize: 5
-    url: jdbc:postgresql://database:5432/dev
-    username: postgres
-    password: postgres
+    url: ${POSTGRES_URL:jdbc:postgresql://database:5432/dev}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
   flyway:
     schemas: users
   jpa:

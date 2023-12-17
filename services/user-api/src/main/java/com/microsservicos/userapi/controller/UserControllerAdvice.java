@@ -3,6 +3,7 @@ package com.microsservicos.userapi.controller;
 import java.util.Date;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,5 +36,17 @@ public class UserControllerAdvice {
   @ExceptionHandler(CpfAlreadyRegisteredException.class)
   public ErrorDto handleCpfAlreadyRegistered(CpfAlreadyRegisteredException e){
     return new ErrorDto(HttpStatus.CONFLICT.value(), e.getMessage(), new Date());
+  }
+
+  @ResponseBody
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  public ErrorDto handleMissingServletRequestParameter(MissingServletRequestParameterException e) {
+    StringBuilder message = new StringBuilder();
+    message.append("The parameter '");
+    String parameterName = e.getParameterName();
+    message.append(parameterName);
+    message.append("' is missing.");
+    return new ErrorDto(HttpStatus.BAD_REQUEST.value(), message.toString(), new Date());
   }
 }

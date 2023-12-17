@@ -2,11 +2,16 @@ package com.microsservicos.shoppingapi.service.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 
 import com.microsservicos.dto.ItemDto;
+import com.microsservicos.dto.ProductDto;
 import com.microsservicos.dto.ShopDto;
+import com.microsservicos.exception.IllegalProductException;
+import com.microsservicos.exception.ShopNotFoundException;
+import com.microsservicos.exception.UserNotFoundException;
 import com.microsservicos.shoppingapi.model.Shop;
 import com.microsservicos.shoppingapi.repository.ShopRepository;
 import com.microsservicos.shoppingapi.service.ProductService;
@@ -34,45 +39,64 @@ public class ShopServiceImpl implements ShopService {
 
   @Override
   public ShopDto findById(Long id) {
-    Optional<Shop> shop = shopRepository.findById(id);
-    if (shop.isPresent()) {
-      return ShopToShopDtoConverter.convert(shop.get());
-    }
-    return null;
+    Shop shop = shopRepository.findById(id).orElseThrow(() -> new ShopNotFoundException());
+    return ShopToShopDtoConverter.convert(shop);
   }
 
   @Override
-  public ShopDto save(ShopDto shopDto) {
+  public ShopDto save(ShopDto shopDto, String key) {
+    validateUserExistence(shopDto, key);
+    List<ProductDto> allProducts = feacthAllProducts(shopDto.items());
+    Double total = calculateTotal(allProducts);
+    return saveShop(shopDto, total);
+  }
 
-    if (userService.getUserByCpf(shopDto.userIdentifier()) == null) {
-      return null;
+  private void validateUserExistence(ShopDto shopDto, String key) {
+    if (Objects.isNull(userService.getUserByCpf(shopDto.userIdentifier(), key))) {
+      throw new UserNotFoundException();
     }
+  }
 
-    if (!validateProduct(shopDto.items())) {
-      return null;
+  private List<ProductDto> feacthAllProducts(List<ItemDto> itens){
+    List<ProductDto> allProducts = itens.stream().map(this::feacthProduct).toList();
+    return allProducts;
+  }
+
+  private ProductDto feacthProduct(ItemDto itemDto){
+    ProductDto product = productService.getProductByIdentifier(itemDto.productIdentifier());
+    if (Objects.isNull(product)) {
+      throw new IllegalProductException();
     }
+    return product;
+  }
 
-    Double total = shopDto.items().stream()
-    .mapToDouble(ItemDto::price).sum();
 
+  private Double calculateTotal(List<ProductDto> allProducts) {
+    Double total = allProducts.stream().mapToDouble(ProductDto::price).sum();
+    return total;
+  }
+
+  private ShopDto saveShop(ShopDto shopDto, Double total) {
     Shop shop = Shop.convert(shopDto);
     shop.setTotal(total);
     shop.setDate(new Date());
     return ShopToShopDtoConverter.convert(shopRepository.save(shop));
   }
 
-  private boolean validateProduct(List<ItemDto> itens){
-    return itens.stream().map(item -> productService.getProductByIdentifier(item.productIdentifier())).allMatch(product -> product != null);
-  }
-
   @Override
   public List<ShopDto> getByUser(String userIdentifier) {
-    return shopRepository.findAllByUserIdentifier(userIdentifier).stream().map(ShopToShopDtoConverter::convert).toList();
+    return shopRepository.findAllByUserIdentifier(userIdentifier)
+    .stream()
+    .map(ShopToShopDtoConverter::convert)
+    .toList();
   }
 
   @Override
   public List<ShopDto> getByDate(ShopDto shopDto) {
-    return shopRepository.findAllByDateAfter(shopDto.date()).stream().map(ShopToShopDtoConverter::convert).toList();
+    return shopRepository.findAllByDateAfter(shopDto.date())
+    .stream()
+    .map(ShopToShopDtoConverter::convert)
+    .toList();
   }
 
 }

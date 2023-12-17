@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
-  Optional<User> findByCpf(String cpf);
+  Optional<User> findByCpfAndKey(String cpf, String key);
   List<User> queryByNameLike(String name);
   boolean existsByCpf(String cpf);
 }

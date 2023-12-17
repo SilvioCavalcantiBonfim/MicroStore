@@ -47,8 +47,8 @@ public class UserController {
 
   @GetMapping("/cpf/{cpf}")
   @ResponseStatus(HttpStatus.OK)
-  public UserDto getUserForCPF(@PathVariable String cpf) {
-    return userService.findByCpf(cpf);
+  public UserDto getUserForCPF(@PathVariable String cpf, @RequestParam(name = "key", required = true) String key) {
+    return userService.findByCpf(cpf, key);
   }
 
   @DeleteMapping("/{id}")

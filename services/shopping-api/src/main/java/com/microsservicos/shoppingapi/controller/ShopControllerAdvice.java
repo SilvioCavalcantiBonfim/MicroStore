@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,6 +47,18 @@ public class ShopControllerAdvice {
     StringBuilder message = new StringBuilder();
     message.append("The parameter '");
     String parameterName = e.getParameterName();
+    message.append(parameterName);
+    message.append("' is missing.");
+    return new ErrorDto(HttpStatus.BAD_REQUEST.value(), message.toString(), new Date());
+  }
+
+  @ResponseBody
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(MissingRequestHeaderException.class)
+  public ErrorDto handleMissingRequestHeader(MissingRequestHeaderException e) {
+    StringBuilder message = new StringBuilder();
+    message.append("The parameter '");
+    String parameterName = e.getHeaderName();
     message.append(parameterName);
     message.append("' is missing.");
     return new ErrorDto(HttpStatus.BAD_REQUEST.value(), message.toString(), new Date());

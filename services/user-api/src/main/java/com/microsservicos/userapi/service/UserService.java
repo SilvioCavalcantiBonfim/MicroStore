@@ -11,7 +11,7 @@ public interface UserService {
 
   UserDto save(UserDto userDto);
 
-  UserDto findByCpf(String cpf);
+  UserDto findByCpf(String cpf, String key);
 
   List<UserDto> queryByName(String name);
 

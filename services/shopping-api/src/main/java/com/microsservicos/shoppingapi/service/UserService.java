@@ -3,5 +3,5 @@ package com.microsservicos.shoppingapi.service;
 import com.microsservicos.dto.UserDto;
 
 public interface UserService {
-  UserDto getUserByCpf(String cpf);
+  UserDto getUserByCpf(String cpf, String key);
 }

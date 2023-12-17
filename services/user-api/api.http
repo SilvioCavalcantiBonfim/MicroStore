@@ -1,7 +1,10 @@
 GET http://localhost:8080/user HTTP/1.1
 
 ###
-GET http://localhost:8080/user/cpf/12345678900 HTTP/1.1
+GET http://localhost:8080/user/cpf/12345678902 HTTP/1.1
+
+###
+GET http://localhost:8080/user/cpf/12345678902?key=1470a16d-a259-4f7a-a42f-eb8347408c22 HTTP/1.1
 
 ###
 POST http://localhost:8080/user HTTP/1.1

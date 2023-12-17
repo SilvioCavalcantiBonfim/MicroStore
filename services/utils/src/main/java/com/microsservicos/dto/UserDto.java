@@ -8,5 +8,6 @@ public record UserDto(
     String address,
     String email,
     String phone,
-    LocalDateTime register) {
+    LocalDateTime register,
+    String key) {
 }

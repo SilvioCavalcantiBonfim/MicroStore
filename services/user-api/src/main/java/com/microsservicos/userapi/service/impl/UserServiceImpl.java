@@ -1,7 +1,7 @@
 package com.microsservicos.userapi.service.impl;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -31,11 +31,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserDto findById(Long id) {
-    Optional<User> user = userRepository.findById(id);
-    if (user.isPresent()) {
-      return UserToUserDtoConverter.convert(user.get());
-    }
-    return null;
+    User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+    return UserToUserDtoConverter.convert(user);
   }
 
   @Override
@@ -48,20 +45,22 @@ public class UserServiceImpl implements UserService {
       throw new CpfAlreadyRegisteredException();
     }
 
-    User user = userRepository.save(User.convert(userDto));
+    User userSaved = User.convert(userDto);
+
+    userSaved.setKey(UUID.randomUUID().toString());
+    
+    User user = userRepository.save(userSaved);
+    
     return UserToUserDtoConverter.convert(user);
   }
 
   @Override
-  public UserDto findByCpf(String cpf) {
+  public UserDto findByCpf(String cpf, String key) {
     if (cpf.length() != 11) {
       throw new InvalidCpfLengthException();
     }
-    Optional<User> user = userRepository.findByCpf(cpf);
-    if (user.isPresent()) {
-      return UserToUserDtoConverter.convert(user.get());
-    }
-    throw new UserNotFoundException();
+    User user = userRepository.findByCpfAndKey(cpf, key).orElseThrow(() -> new UserNotFoundException());
+    return UserToUserDtoConverter.convert(user);
   }
   
   @Override
@@ -71,10 +70,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void deleteUser(long id) {
-    Optional<User> user = userRepository.findById(id);
-    if (!user.isPresent()) {
-      throw new UserNotFoundException();
-    }
-    userRepository.delete(user.get());
+    User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+    userRepository.delete(user);
   }
 }
