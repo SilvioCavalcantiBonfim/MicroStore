@@ -20,8 +20,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.microsservicos.dto.user.UserOutputDto;
-import com.microsservicos.dto.user.UserInputDto;
+import com.microsservicos.dto.UserInputDto;
+import com.microsservicos.dto.UserOutputDto;
 import com.microsservicos.exception.CpfAlreadyRegisteredException;
 import com.microsservicos.exception.InvalidCpfLengthException;
 import com.microsservicos.exception.UserNotFoundException;

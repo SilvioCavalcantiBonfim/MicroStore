@@ -7,7 +7,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.microsservicos.dto.user.UserOutputDto;
+import com.microsservicos.dto.UserOutputDto;
 import com.microsservicos.exception.InvalidCpfLengthException;
 import com.microsservicos.exception.UserNotFoundException;
 import com.microsservicos.shoppingapi.service.UserService;

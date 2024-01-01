@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: shopping-api
+  namespace: store
+  labels:
+    run: shopping-api
+spec:
+  selector:
+    app: shopping-api
+  type: NodePort
+  ports:
+  - port: 8082
+    targetPort: 8082
+    protocol: TCP

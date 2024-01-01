@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: product-api
+  namespace: store
+  labels:
+    run: product-api
+spec:
+  selector:
+    app: product-api
+  type: NodePort
+  ports:
+  - port: 8081
+    targetPort: 8081
+    protocol: TCP

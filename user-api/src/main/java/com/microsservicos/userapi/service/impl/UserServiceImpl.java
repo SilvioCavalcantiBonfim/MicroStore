@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.microsservicos.dto.user.UserOutputDto;
-import com.microsservicos.dto.user.UserInputDto;
+import com.microsservicos.dto.UserInputDto;
+import com.microsservicos.dto.UserOutputDto;
 import com.microsservicos.exception.CpfAlreadyRegisteredException;
 import com.microsservicos.exception.InvalidCpfLengthException;
 import com.microsservicos.exception.UserNotFoundException;

@@ -58,8 +58,8 @@ public class ReportControllerTest {
   @BeforeAll
   private static void setup() throws ParseException {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    ITEM1 = new ItemDto("video-game", 2001.0f);
-    ITEM2 = new ItemDto("video-game", 20.0f);
+    ITEM1 = new ItemDto("video-game", 2001.0f, 1);
+    ITEM2 = new ItemDto("video-game", 20.0f, 2);
     SHOP1 = new ShopDto("12345678910", 2001.0, sdf.parse("2023-12-31 01:51:36.789"), List.of(ITEM1));
     SHOP2 = new ShopDto("12345678910", 20.0, sdf.parse("2020-12-31 01:51:36.789"), List.of(ITEM2));
   }

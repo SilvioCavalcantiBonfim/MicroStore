@@ -1,7 +1,7 @@
 package com.microsservicos.userapi.util;
 
-import com.microsservicos.dto.user.UserOutputDto;
-import com.microsservicos.dto.user.UserInputDto;
+import com.microsservicos.dto.UserInputDto;
+import com.microsservicos.dto.UserOutputDto;
 import com.microsservicos.userapi.model.User;
 
 public final class Mapper {

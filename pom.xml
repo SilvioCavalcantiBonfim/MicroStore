@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.microsservicos</groupId>
   <artifactId>services</artifactId>
-  <version>0.1.0</version>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
   <modules>
     <module>product-api</module>
@@ -19,7 +19,7 @@
     <flyway.version>9.22.3</flyway.version>
     <spring.version>3.2.1</spring.version>
     <postgresql.version>42.7.1</postgresql.version>
-    <utils.version>0.1.0</utils.version>
+    <utils.version>1.0.0</utils.version>
     <jacoco.version>0.8.11</jacoco.version>
     <assertj.version>3.24.2</assertj.version>
     <byte.buddy.version>1.14.9</byte.buddy.version>
@@ -170,7 +170,7 @@
             </execution>
           </executions>
           <configuration>
-            <repository>silviocavalcanti/store-${project.artifactId}</repository>
+            <repository>${project.artifactId}</repository>
             <tag>${project.version}</tag>
             <buildArgs>
               <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>

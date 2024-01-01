@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microsservicos.dto.user.UserOutputDto;
-import com.microsservicos.dto.user.UserInputDto;
+import com.microsservicos.dto.UserInputDto;
+import com.microsservicos.dto.UserOutputDto;
 import com.microsservicos.userapi.service.UserService;
 
 import jakarta.validation.Valid;

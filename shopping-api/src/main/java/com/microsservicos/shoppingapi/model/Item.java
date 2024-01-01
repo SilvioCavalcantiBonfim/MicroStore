@@ -7,7 +7,14 @@ public class Item {
 
   private String productIdentifier;
   private Float price;
+  private Integer amount;
 
+  public Integer getAmount() {
+    return amount;
+  }
+  public void setAmount(Integer amount) {
+    this.amount = amount;
+  }
   public String getProductIdentifier() {
     return productIdentifier;
   }

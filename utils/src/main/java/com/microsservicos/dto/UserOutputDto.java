@@ -1,4 +1,4 @@
-package com.microsservicos.dto.user;
+package com.microsservicos.dto;
 
 import java.time.LocalDateTime;
 

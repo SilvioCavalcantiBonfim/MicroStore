@@ -44,8 +44,6 @@ Thumbs.db
 # Arquivos de configuração
 *.cfg
 *.conf
-*.yml
-!/docker-compose.yml
 
 # Arquivo de classe compilado
 *.class

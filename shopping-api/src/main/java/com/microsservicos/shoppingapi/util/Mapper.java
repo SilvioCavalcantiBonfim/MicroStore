@@ -18,7 +18,7 @@ public final class Mapper{
 
   public static ItemDto itemToItemDto(Item item) {
     try {
-      return new ItemDto(item.getProductIdentifier(), item.getPrice());
+      return new ItemDto(item.getProductIdentifier(), item.getPrice(), item.getAmount());
     } catch (RuntimeException e) {
       throw new IllegalArgumentException("Invalid argument provided.");
     }
@@ -29,6 +29,7 @@ public final class Mapper{
       Item item = new Item();
       item.setProductIdentifier(itemDto.productIdentifier());
       item.setPrice(itemDto.price());
+      item.setAmount(itemDto.amount());
       return item;
     } catch (RuntimeException e) {
       throw new IllegalArgumentException("Invalid argument provided.");

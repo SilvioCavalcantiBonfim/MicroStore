@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: store
+  name: shopping-api
+  labels:
+    type: service
+    app: shopping-api
+spec:
+  # strategy update
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopping-api
+  #template of database
+  template:
+    metadata:
+      labels:
+        app: shopping-api
+    spec:
+      containers:
+      - image: silviocavalcanti/shopping-api:1.0.0
+        name: shopping-api
+        #resource of pod
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        #enveroments variables
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_URL
+        - name: USER_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: endpoint-secret
+              key: USER_API_URL
+        - name: PRODUCT_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: endpoint-secret
+              key: PRODUCT_API_URL
+              
+        # ports
+        ports:
+        - containerPort: 8082

@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.microsservicos.dto.user.UserOutputDto;
-import com.microsservicos.dto.user.UserInputDto;
+import com.microsservicos.dto.UserInputDto;
+import com.microsservicos.dto.UserOutputDto;
 import com.microsservicos.userapi.model.User;
 import com.microsservicos.userapi.util.Mapper;
 

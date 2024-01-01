@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx
+    volumes:
+      - /home/silvio/backend-java/user-api/target/site/jacoco:/usr/share/nginx/html/user-api
+      - /home/silvio/backend-java/product-api/target/site/jacoco:/usr/share/nginx/html/product-api
+      - /home/silvio/backend-java/shopping-api/target/site/jacoco:/usr/share/nginx/html/shopping-api
+    ports:
+      - 8080:80

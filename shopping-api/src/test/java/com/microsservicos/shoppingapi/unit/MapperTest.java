@@ -47,8 +47,9 @@ public class MapperTest {
   private void setup() {
     ITEM.setProductIdentifier("ABC123");
     ITEM.setPrice(10.0f);
+    ITEM.setAmount(1);
 
-    ITEMDTO = new ItemDto(ITEM.getProductIdentifier(), ITEM.getPrice());
+    ITEMDTO = new ItemDto(ITEM.getProductIdentifier(), ITEM.getPrice(), ITEM.getAmount());
 
     SHOP.setId(null);
     SHOP.setUserIdentifier("RST789");
@@ -73,7 +74,7 @@ public class MapperTest {
 
     ItemDto result = Mapper.itemToItemDto(ITEM);
 
-    ItemDto expected = new ItemDto(null, ITEM.getPrice());
+    ItemDto expected = new ItemDto(null, ITEM.getPrice(), ITEM.getAmount());
 
     assertThat(result).isEqualTo(expected);
   }
@@ -84,7 +85,18 @@ public class MapperTest {
     ITEM.setPrice(null);
     ItemDto result = Mapper.itemToItemDto(ITEM);
 
-    ItemDto expected = new ItemDto(ITEM.getProductIdentifier(), null);
+    ItemDto expected = new ItemDto(ITEM.getProductIdentifier(), null, ITEM.getAmount());
+
+    assertThat(result).isEqualTo(expected);
+  }
+
+    @Test
+  public void itemToItemDtoWithAmountNull() {
+
+    ITEM.setAmount(null);
+    ItemDto result = Mapper.itemToItemDto(ITEM);
+
+    ItemDto expected = new ItemDto(ITEM.getProductIdentifier(), ITEM.getPrice(), null);
 
     assertThat(result).isEqualTo(expected);
   }
@@ -96,7 +108,7 @@ public class MapperTest {
 
     ItemDto result = Mapper.itemToItemDto(ITEM);
 
-    ItemDto expected = new ItemDto("", ITEM.getPrice());
+    ItemDto expected = new ItemDto("", ITEM.getPrice(), ITEM.getAmount());
 
     assertThat(result).isEqualTo(expected);
   }
@@ -120,7 +132,7 @@ public class MapperTest {
   @Test
   public void itemDtoToItemWithProductIdentifierNull() {
 
-    ItemDto nullDto = new ItemDto(null, ITEM.getPrice());
+    ItemDto nullDto = new ItemDto(null, ITEM.getPrice(), ITEM.getAmount());
 
     Item result = Mapper.itemDtoToItem(nullDto);
 
@@ -132,7 +144,7 @@ public class MapperTest {
   @Test
   public void itemDtoToItemWithProductIdentifierBlank() {
 
-    ItemDto nullDto = new ItemDto("", ITEM.getPrice());
+    ItemDto nullDto = new ItemDto("", ITEM.getPrice(), ITEM.getAmount());
 
     Item result = Mapper.itemDtoToItem(nullDto);
 
@@ -144,7 +156,7 @@ public class MapperTest {
   @Test
   public void itemDtoToItemWithPriceNull() {
 
-    ItemDto nullDto = new ItemDto(ITEM.getProductIdentifier(), null);
+    ItemDto nullDto = new ItemDto(ITEM.getProductIdentifier(), null, ITEM.getAmount());
 
     Item result = Mapper.itemDtoToItem(nullDto);
 

@@ -35,8 +35,8 @@ public class ReportServiceImplTest {
   private static Shop ORDER_1 = new Shop();
   private static Item ITEM_1 = new Item();
   private static Item ITEM_2 = new Item();
-  private static ItemDto ITEM_1_DTO = new ItemDto("XYZ000", 10.0f);
-  private static ItemDto ITEM_2_DTO = new ItemDto("XYZ001", 5.5f);
+  private static ItemDto ITEM_1_DTO = new ItemDto("XYZ000", 10.0f, 1);
+  private static ItemDto ITEM_2_DTO = new ItemDto("XYZ001", 5.5f, 2);
 
     private static Date date;
 
@@ -46,10 +46,12 @@ public class ReportServiceImplTest {
 
     ITEM_1.setProductIdentifier("XYZ000");
     ITEM_1.setPrice(10.0f);
-
+    ITEM_1.setAmount(1);
+    
     ITEM_2.setProductIdentifier("XYZ001");
     ITEM_2.setPrice(5.5f);
-
+    ITEM_2.setAmount(2);
+    
     ORDER_1.setId(1L);
     ORDER_1.setUserIdentifier("ABC123");
     ORDER_1.setTotal(10.0);

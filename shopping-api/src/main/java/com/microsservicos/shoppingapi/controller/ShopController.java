@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ShopInputDto;
 import com.microsservicos.shoppingapi.service.ShopService;
 
 import jakarta.validation.Valid;
@@ -58,7 +59,7 @@ public class ShopController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ShopDto createShop(@Valid @RequestBody ShopDto shopDto,
+  public ShopDto createShop(@Valid @RequestBody ShopInputDto shopDto,
       @RequestHeader(name = "key", required = true) String key) {
     return shopService.save(shopDto, key);
   }

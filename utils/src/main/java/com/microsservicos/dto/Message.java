@@ -1,4 +1,4 @@
-package com.microsservicos.dto.user;
+package com.microsservicos.dto;
 
 public final class Message {
     public static final String NAME_BLANK = "the name field must not be blank";

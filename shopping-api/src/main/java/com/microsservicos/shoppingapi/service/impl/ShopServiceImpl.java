@@ -1,17 +1,22 @@
 package com.microsservicos.shoppingapi.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.DoubleStream;
+import java.util.stream.DoubleStream.Builder;
 
 import org.springframework.stereotype.Service;
 
-import com.microsservicos.dto.ItemDto;
+import com.microsservicos.dto.ItemInputDto;
 import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ShopInputDto;
 import com.microsservicos.dto.product.ProductDto;
 import com.microsservicos.exception.IllegalProductException;
 import com.microsservicos.exception.ShopNotFoundException;
 import com.microsservicos.exception.UserNotFoundException;
+import com.microsservicos.shoppingapi.model.Item;
 import com.microsservicos.shoppingapi.model.Shop;
 import com.microsservicos.shoppingapi.repository.ShopRepository;
 import com.microsservicos.shoppingapi.service.ProductService;
@@ -44,11 +49,11 @@ public class ShopServiceImpl implements ShopService {
   }
 
   @Override
-  public ShopDto save(ShopDto shopDto, String key) {
+  public ShopDto save(ShopInputDto shopDto, String key) {
     validateUserExistence(shopDto.userIdentifier(), key);
-    List<ProductDto> allProducts = feacthAllProducts(shopDto.itens());
-    Double total = calculateTotal(allProducts);
-    return saveShop(shopDto, total);
+    List<ProductDto> allProducts = feacthAllProducts(shopDto.items());
+    Double total = calculateTotal(allProducts, shopDto.items());
+    return saveShop(shopDto, allProducts, total);
   }
 
   private void validateUserExistence(String cpf, String key) {
@@ -57,51 +62,77 @@ public class ShopServiceImpl implements ShopService {
     }
   }
 
-  private List<ProductDto> feacthAllProducts(List<ItemDto> itens){
+  private List<ProductDto> feacthAllProducts(List<ItemInputDto> itens) {
     if (Objects.isNull(itens) || itens.isEmpty()) {
       throw new IllegalProductException();
     }
-    List<ProductDto> allProducts = itens.stream().map(this::feacthProduct).toList();
+    List<ProductDto> allProducts = itens.stream().map(this::feacthProductIdentifier).toList();
     return allProducts;
   }
 
-  private ProductDto feacthProduct(ItemDto itemDto){
-    ProductDto product = productService.getProductByIdentifier(itemDto.productIdentifier());
+  private ProductDto feacthProductIdentifier(ItemInputDto item) {
+    return feacthProduct(item.productIdentifier());
+  }
+
+  private ProductDto feacthProduct(String productIdentifier) {
+    ProductDto product = productService.getProductByIdentifier(productIdentifier);
     if (Objects.isNull(product)) {
       throw new IllegalProductException();
     }
     return product;
   }
 
+  private Double calculateTotal(List<ProductDto> allProducts, List<ItemInputDto> allItems) {
+    Builder totalPriceStream = DoubleStream.builder();
 
-  private Double calculateTotal(List<ProductDto> allProducts) {
-    Double total = allProducts.stream().mapToDouble(ProductDto::price).sum();
-    return total;
+    for(int i = 0; i < allProducts.size(); i++){
+      totalPriceStream.add(allProducts.get(i).price() * allItems.get(i).amount());
+    }
+    
+    return totalPriceStream.build().sum();
   }
 
-  private ShopDto saveShop(ShopDto shopDto, Double total) {
-    Shop shop = Mapper.shopDtoToShop(shopDto);
+  private ShopDto saveShop(ShopInputDto shopDto, List<ProductDto> allProducts, Double total) {
+    Shop shop = createEntityShop(shopDto, allProducts, total);
+
+    return Mapper.shopToShopDto(shopRepository.save(shop));
+  }
+
+  private Shop createEntityShop(ShopInputDto shopDto, List<ProductDto> allProducts, Double total) {
+    Shop shop = new Shop();
     shop.setTotal(total);
     shop.setDate(new Date());
-    return Mapper.shopToShopDto(shopRepository.save(shop));
+    shop.setUserIdentifier(shopDto.userIdentifier());
+
+    List<Item> allItem = new ArrayList<>();
+    for (int i = 0; i < allProducts.size(); i++) {
+      Item currentItem = new Item();
+      currentItem.setProductIdentifier(shopDto.items().get(i).productIdentifier());
+      currentItem.setPrice(allProducts.get(i).price());
+      currentItem.setAmount(shopDto.items().get(i).amount());
+      allItem.add(currentItem);
+    }
+
+    shop.setItens(allItem);
+    return shop;
   }
 
   @Override
   public List<ShopDto> getByUser(String userIdentifier, String key) {
     validateUserExistence(userIdentifier, key);
     return shopRepository.findAllByUserIdentifier(userIdentifier)
-    .stream()
-    .map(Mapper::shopToShopDto)
-    .toList();
+        .stream()
+        .map(Mapper::shopToShopDto)
+        .toList();
   }
 
   @Override
   public List<ShopDto> getByDate(Date date) {
     return shopRepository.findAllByDateAfter(date)
-    .stream()
-    .map(Mapper::shopToShopDto)
-    .map(ShopDto::obfuscate)
-    .toList();
+        .stream()
+        .map(Mapper::shopToShopDto)
+        .map(ShopDto::obfuscate)
+        .toList();
   }
 
 }

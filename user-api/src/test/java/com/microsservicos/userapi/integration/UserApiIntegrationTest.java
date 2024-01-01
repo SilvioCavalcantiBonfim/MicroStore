@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsservicos.dto.user.UserOutputDto;
+import com.microsservicos.dto.UserOutputDto;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;

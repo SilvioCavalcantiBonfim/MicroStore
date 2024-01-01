@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: store
+  name: product-api
+  labels:
+    type: service
+    app: product-api
+spec:
+  # strategy update
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-api
+  #template of database
+  template:
+    metadata:
+      labels:
+        app: product-api
+    spec:
+      containers:
+      - image: silviocavalcanti/product-api:1.0.0
+        name: product-api
+        #resource of pod
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        #enveroments variables
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_URL
+        # ports
+        ports:
+        - containerPort: 8081

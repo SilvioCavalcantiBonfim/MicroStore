@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: store
+  name: postgres
+  labels:
+    type: database
+    app: postgres
+spec:
+  # strategy update
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  #template of database
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - image: postgres:15.5-alpine3.19
+        name: postgres
+        #resource of pod
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        #enveroments variables
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_DB
+        # ports
+        ports:
+        - containerPort: 5432
+          name: postgres
+        # volumes
+        volumeMounts:
+        - mountPath: /database
+          name: database
+        imagePullPolicy: Always
+      volumes:
+      - name: database
+        emptyDir: {}
+      restartPolicy: Always

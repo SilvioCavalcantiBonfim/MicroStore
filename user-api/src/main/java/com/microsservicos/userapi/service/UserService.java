@@ -2,8 +2,8 @@ package com.microsservicos.userapi.service;
 
 import java.util.List;
 
-import com.microsservicos.dto.user.UserOutputDto;
-import com.microsservicos.dto.user.UserInputDto;
+import com.microsservicos.dto.UserInputDto;
+import com.microsservicos.dto.UserOutputDto;
 
 public interface UserService {
   
