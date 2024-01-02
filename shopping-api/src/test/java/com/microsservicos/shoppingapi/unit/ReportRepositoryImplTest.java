@@ -7,8 +7,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class ReportRepositoryImplTest {
     when(entityManager.createQuery(anyString())).thenReturn(query);
 
     when(query.getResultList()).thenReturn(new ArrayList<>());
-    List<Shop> result = reportRepository.getShopByFilters(new Date(), new Date(), 0.0f);
+    List<Shop> result = reportRepository.getShopByFilters(LocalDate.now(), LocalDate.now(), 0.0f);
 
     assertThat(result).isEmpty();
   }
@@ -52,7 +52,7 @@ public class ReportRepositoryImplTest {
     when(entityManager.createQuery(anyString())).thenReturn(query);
 
     when(query.getResultList()).thenReturn(new ArrayList<>());
-    List<Shop> result = reportRepository.getShopByFilters(new Date(), null, 0.0f);
+    List<Shop> result = reportRepository.getShopByFilters(LocalDate.now(), null, 0.0f);
 
     assertThat(result).isEmpty();
   }
@@ -63,7 +63,7 @@ public class ReportRepositoryImplTest {
     when(entityManager.createQuery(anyString())).thenReturn(query);
 
     when(query.getResultList()).thenReturn(new ArrayList<>());
-    List<Shop> result = reportRepository.getShopByFilters(new Date(), new Date(), null);
+    List<Shop> result = reportRepository.getShopByFilters(LocalDate.now(), LocalDate.now(), null);
 
     assertThat(result).isEmpty();
   }
@@ -71,7 +71,7 @@ public class ReportRepositoryImplTest {
   @Test
   public void getShopByFiltersWithStartNull() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> reportRepository.getShopByFilters(null, new Date(), 0.0f));
+        .isThrownBy(() -> reportRepository.getShopByFilters(null, LocalDate.now(), 0.0f));
   }
 
   @Test
@@ -81,7 +81,7 @@ public class ReportRepositoryImplTest {
 
     when(query.getSingleResult()).thenReturn(new Object[] { 1L, BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0) });
 
-    ReportDto result = reportRepository.getReportByDate(new Date(), new Date());
+    ReportDto result = reportRepository.getReportByDate(LocalDate.now(), LocalDate.now());
 
     ReportDto expected = new ReportDto(1L, 100.0, 100.0);
 
@@ -91,7 +91,7 @@ public class ReportRepositoryImplTest {
   @Test
   public void getReportByDateWithStartNull() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> reportRepository.getReportByDate(null, new Date()));
+        .isThrownBy(() -> reportRepository.getReportByDate(null, LocalDate.now()));
   }
 
     @Test
@@ -101,7 +101,7 @@ public class ReportRepositoryImplTest {
 
     when(query.getSingleResult()).thenReturn(new Object[] { 1L, BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0)});
 
-    ReportDto result = reportRepository.getReportByDate(new Date(), null);
+    ReportDto result = reportRepository.getReportByDate(LocalDate.now(), null);
 
     ReportDto expected = new ReportDto(1L, 100.0, 100.0);
 

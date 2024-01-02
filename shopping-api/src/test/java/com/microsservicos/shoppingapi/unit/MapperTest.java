@@ -3,8 +3,8 @@ package com.microsservicos.shoppingapi.unit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.microsservicos.dto.ItemDto;
-import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ShopOutputDto;
 import com.microsservicos.shoppingapi.model.Item;
 import com.microsservicos.shoppingapi.model.Shop;
 import com.microsservicos.shoppingapi.util.Mapper;
@@ -32,7 +32,7 @@ public class MapperTest {
   private Item ITEM = new Item();
   private ItemDto ITEMDTO;
   private Shop SHOP = new Shop();
-  private ShopDto SHOPDTO;
+  private ShopOutputDto SHOPDTO;
   private static Validator validator;
 
   @BeforeAll
@@ -54,10 +54,10 @@ public class MapperTest {
     SHOP.setId(null);
     SHOP.setUserIdentifier("RST789");
     SHOP.setTotal(10.0);
-    SHOP.setDate(new Date());
+    SHOP.setDate(LocalDateTime.now());
     SHOP.setItens(List.of(ITEM));
 
-    SHOPDTO = new ShopDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of(ITEMDTO));
+    SHOPDTO = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of(ITEMDTO));
   }
 
   @Test
@@ -174,7 +174,7 @@ public class MapperTest {
 
   @Test
   public void shopToShopDtoNonNull() {
-    ShopDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
 
     assertThat(result).isEqualTo(SHOPDTO);
   }
@@ -191,9 +191,9 @@ public class MapperTest {
 
     SHOP.setUserIdentifier(null);
 
-    ShopDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
 
-    ShopDto expected = new ShopDto(null, SHOP.getTotal(), SHOP.getDate(), List.of(ITEMDTO));
+    ShopOutputDto expected = new ShopOutputDto(null, SHOP.getTotal(), SHOP.getDate(), List.of(ITEMDTO));
 
     assertThat(result).isEqualTo(expected);
   }
@@ -202,9 +202,9 @@ public class MapperTest {
   public void shopToShopDtoTotalNull() {
     SHOP.setTotal(null);
 
-    ShopDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
 
-    ShopDto expected = new ShopDto(SHOP.getUserIdentifier(), null, SHOP.getDate(), List.of(ITEMDTO));
+    ShopOutputDto expected = new ShopOutputDto(SHOP.getUserIdentifier(), null, SHOP.getDate(), List.of(ITEMDTO));
 
     assertThat(result).isEqualTo(expected);
   }
@@ -213,9 +213,9 @@ public class MapperTest {
   public void shopToShopDtoDateNull() {
     SHOP.setDate(null);
 
-    ShopDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
 
-    ShopDto expected = new ShopDto(SHOP.getUserIdentifier(), SHOP.getTotal(), null, List.of(ITEMDTO));
+    ShopOutputDto expected = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), null, List.of(ITEMDTO));
 
     assertThat(result).isEqualTo(expected);
   }
@@ -224,9 +224,9 @@ public class MapperTest {
   public void shopToShopDtoItemsNull() {
     SHOP.setItens(null);
 
-    ShopDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
 
-    ShopDto expected = new ShopDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of());
+    ShopOutputDto expected = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of());
 
     assertThat(result).isEqualTo(expected);
   }
@@ -234,9 +234,9 @@ public class MapperTest {
   public void shopToShopDtoItemsEmpty() {
     SHOP.setItens(List.of());
 
-    ShopDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
 
-    ShopDto expected = new ShopDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of());
+    ShopOutputDto expected = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of());
 
     assertThat(result).isEqualTo(expected);
   }
@@ -255,7 +255,7 @@ public class MapperTest {
   @Test
   public void shopDtoToShopWithProductIdentifierNull() {
 
-    ShopDto nullDto = new ShopDto(null, SHOP.getTotal(), SHOP.getDate(), List.of(ITEMDTO));
+    ShopOutputDto nullDto = new ShopOutputDto(null, SHOP.getTotal(), SHOP.getDate(), List.of(ITEMDTO));
 
     Shop expected = new Shop();
     expected.setUserIdentifier(nullDto.userIdentifier());
@@ -273,7 +273,7 @@ public class MapperTest {
   @Test
   public void shopDtoToShopWithProductIdentifierBlank() {
 
-    ShopDto nullDto = new ShopDto("", SHOP.getTotal(), SHOP.getDate(), List.of(ITEMDTO));
+    ShopOutputDto nullDto = new ShopOutputDto("", SHOP.getTotal(), SHOP.getDate(), List.of(ITEMDTO));
 
     Shop expected = new Shop();
     expected.setUserIdentifier(nullDto.userIdentifier());
@@ -291,7 +291,7 @@ public class MapperTest {
    @Test
   public void shopDtoToShopWithTotalNull() {
 
-    ShopDto nullDto = new ShopDto(SHOP.getUserIdentifier(), null, SHOP.getDate(), List.of(ITEMDTO));
+    ShopOutputDto nullDto = new ShopOutputDto(SHOP.getUserIdentifier(), null, SHOP.getDate(), List.of(ITEMDTO));
 
     Shop expected = new Shop();
     expected.setUserIdentifier(nullDto.userIdentifier());
@@ -309,7 +309,7 @@ public class MapperTest {
    @Test
   public void shopDtoToShopWithDateNull() {
 
-    ShopDto nullDto = new ShopDto(SHOP.getUserIdentifier(), SHOP.getTotal(), null, List.of(ITEMDTO));
+    ShopOutputDto nullDto = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), null, List.of(ITEMDTO));
 
     Shop expected = new Shop();
     expected.setUserIdentifier(nullDto.userIdentifier());
@@ -327,7 +327,7 @@ public class MapperTest {
   @Test
   public void shopDtoToShopWithItensNull() {
 
-    ShopDto nullDto = new ShopDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), null);
+    ShopOutputDto nullDto = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), null);
 
     Shop expected = new Shop();
     expected.setUserIdentifier(nullDto.userIdentifier());
@@ -345,7 +345,7 @@ public class MapperTest {
   @Test
   public void shopDtoToShopWithItensEmpty() {
 
-    ShopDto nullDto = new ShopDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of());
+    ShopOutputDto nullDto = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of());
 
     Shop expected = new Shop();
     expected.setUserIdentifier(nullDto.userIdentifier());

@@ -2,8 +2,8 @@ package com.microsservicos.productapi.util;
 
 import java.util.Objects;
 
-import com.microsservicos.dto.product.CategoryDto;
-import com.microsservicos.dto.product.ProductDto;
+import com.microsservicos.dto.CategoryDto;
+import com.microsservicos.dto.ProductDto;
 import com.microsservicos.productapi.model.Category;
 import com.microsservicos.productapi.model.Product;
 

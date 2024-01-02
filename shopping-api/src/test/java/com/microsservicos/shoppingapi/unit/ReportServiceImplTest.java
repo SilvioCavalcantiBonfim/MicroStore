@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.assertj.core.groups.Tuple;
@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.microsservicos.dto.ItemDto;
 import com.microsservicos.dto.ReportDto;
-import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ShopOutputDto;
 import com.microsservicos.shoppingapi.model.Item;
 import com.microsservicos.shoppingapi.model.Shop;
 import com.microsservicos.shoppingapi.repository.ShopRepository;
@@ -38,11 +38,11 @@ public class ReportServiceImplTest {
   private static ItemDto ITEM_1_DTO = new ItemDto("XYZ000", 10.0f, 1);
   private static ItemDto ITEM_2_DTO = new ItemDto("XYZ001", 5.5f, 2);
 
-    private static Date date;
+    private static LocalDateTime date;
 
   @BeforeEach
   private void setup() {
-    date = new Date();
+    date = LocalDateTime.now();
 
     ITEM_1.setProductIdentifier("XYZ000");
     ITEM_1.setPrice(10.0f);
@@ -63,7 +63,7 @@ public class ReportServiceImplTest {
   public void getShopByFiltersWithAllArgsNotNull(){
     when(shopRepository.getShopByFilters(any(), any(), any())).thenReturn(List.of(ORDER_1));
 
-    List<ShopDto> result = reportService.getShopByFilters(date, date, 100.0f);
+    List<ShopOutputDto> result = reportService.getShopByFilters(date.toLocalDate(), date.toLocalDate(), 100.0f);
 
     assertThat(result).extracting("userIdentifier", "total", "date", "itens")
     .contains(new Tuple("ABC123",10.0,date, List.of(ITEM_1_DTO, ITEM_2_DTO)));
@@ -71,14 +71,14 @@ public class ReportServiceImplTest {
 
   @Test
   public void getShopByFiltersWithStartNull(){
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> reportService.getShopByFilters(null, date, 100.0f));
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> reportService.getShopByFilters(null, date.toLocalDate(), 100.0f));
   }
 
   @Test
   public void getShopByFiltersWithEndNull(){
     when(shopRepository.getShopByFilters(any(), any(), any())).thenReturn(List.of(ORDER_1));
 
-    List<ShopDto> result = reportService.getShopByFilters(date, null, 100.0f);
+    List<ShopOutputDto> result = reportService.getShopByFilters(date.toLocalDate(), null, 100.0f);
 
     assertThat(result).extracting("userIdentifier", "total", "date", "itens")
     .contains(new Tuple("ABC123",10.0,date, List.of(ITEM_1_DTO, ITEM_2_DTO)));
@@ -88,7 +88,7 @@ public class ReportServiceImplTest {
   public void getShopByFiltersWithMinNull(){
     when(shopRepository.getShopByFilters(any(), any(), any())).thenReturn(List.of(ORDER_1));
 
-    List<ShopDto> result = reportService.getShopByFilters(date, date, null);
+    List<ShopOutputDto> result = reportService.getShopByFilters(date.toLocalDate(), date.toLocalDate(), null);
 
     assertThat(result).extracting("userIdentifier", "total", "date", "itens")
     .contains(new Tuple("ABC123",10.0,date, List.of(ITEM_1_DTO, ITEM_2_DTO)));
@@ -100,14 +100,14 @@ public class ReportServiceImplTest {
 
     when(shopRepository.getReportByDate(any(), any())).thenReturn(expected);
 
-    ReportDto result = reportService.getReportByDate(date, date);
+    ReportDto result = reportService.getReportByDate(date.toLocalDate(), date.toLocalDate());
 
     assertThat(result).isEqualTo(expected);
   }
 
   @Test
   public void getReportByDateWithStartNull(){
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> reportService.getReportByDate(null, date));
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> reportService.getReportByDate(null, date.toLocalDate()));
   }
 
   @Test
@@ -116,7 +116,7 @@ public class ReportServiceImplTest {
 
     when(shopRepository.getReportByDate(any(), any())).thenReturn(expected);
 
-    ReportDto result = reportService.getReportByDate(date, null);
+    ReportDto result = reportService.getReportByDate(date.toLocalDate(), null);
 
     assertThat(result).isEqualTo(expected);
   }

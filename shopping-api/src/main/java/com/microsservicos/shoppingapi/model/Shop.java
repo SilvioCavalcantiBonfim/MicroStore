@@ -1,6 +1,6 @@
 package com.microsservicos.shoppingapi.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.ElementCollection;
@@ -22,7 +22,7 @@ public class Shop {
 
   private Double total;
 
-  private Date date;
+  private LocalDateTime date;
 
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "item", joinColumns = @JoinColumn(name = "shop_id"))
@@ -52,13 +52,7 @@ public class Shop {
     this.total = total;
   }
 
-  public Date getDate() {
-    return date;
-  }
-
-  public void setDate(Date date) {
-    this.date = date;
-  }
+  
 
   public List<Item> getItens() {
     return itens;
@@ -66,5 +60,13 @@ public class Shop {
 
   public void setItens(List<Item> items) {
     this.itens = items;
+  }
+
+  public LocalDateTime getDate() {
+    return date;
+  }
+
+  public void setDate(LocalDateTime date) {
+    this.date = date;
   }
 }

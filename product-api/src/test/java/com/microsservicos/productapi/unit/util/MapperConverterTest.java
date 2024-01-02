@@ -3,8 +3,8 @@ package com.microsservicos.productapi.unit.util;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.microsservicos.dto.product.CategoryDto;
-import com.microsservicos.dto.product.ProductDto;
+import com.microsservicos.dto.CategoryDto;
+import com.microsservicos.dto.ProductDto;
 import com.microsservicos.productapi.model.Category;
 import com.microsservicos.productapi.model.Product;
 import com.microsservicos.productapi.util.Mapper;

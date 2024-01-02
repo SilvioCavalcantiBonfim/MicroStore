@@ -17,8 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.microsservicos.dto.product.CategoryDto;
-import com.microsservicos.dto.product.ProductDto;
+import com.microsservicos.dto.CategoryDto;
+import com.microsservicos.dto.ProductDto;
 import com.microsservicos.exception.CategoryNotFoundException;
 import com.microsservicos.exception.ProductNotFoundException;
 import com.microsservicos.productapi.model.*;

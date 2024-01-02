@@ -15,8 +15,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsservicos.dto.product.CategoryDto;
-import com.microsservicos.dto.product.ProductDto;
+import com.microsservicos.dto.CategoryDto;
+import com.microsservicos.dto.ProductDto;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;

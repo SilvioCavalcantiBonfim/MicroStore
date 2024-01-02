@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microsservicos.dto.product.ProductDto;
+import com.microsservicos.dto.ProductDto;
 import com.microsservicos.productapi.service.ProductService;
 
 import jakarta.validation.Valid;

@@ -3,7 +3,7 @@ package com.microsservicos.productapi.service.impl;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
-import com.microsservicos.dto.product.ProductDto;
+import com.microsservicos.dto.ProductDto;
 import com.microsservicos.exception.CategoryNotFoundException;
 import com.microsservicos.exception.ProductNotFoundException;
 import com.microsservicos.productapi.model.Product;

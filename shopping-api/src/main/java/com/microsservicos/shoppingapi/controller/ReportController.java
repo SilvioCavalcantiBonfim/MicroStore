@@ -1,6 +1,6 @@
 package com.microsservicos.shoppingapi.controller;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microsservicos.dto.ReportDto;
-import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ShopOutputDto;
 import com.microsservicos.shoppingapi.service.ReportService;
 
 @RestController
@@ -27,13 +27,13 @@ public class ReportController {
 
   @GetMapping("/search")
   @ResponseStatus(HttpStatus.OK)
-  public List<ShopDto> getShopsByFilter(
+  public List<ShopOutputDto> getShopsByFilter(
       @RequestParam(name = "start", required = true) 
       @DateTimeFormat(pattern = "dd/MM/yyyy") 
-      Date start,
+      LocalDate start,
       @RequestParam(name = "end", required = false) 
       @DateTimeFormat(pattern = "dd/MM/yyyy") 
-      Date end, 
+      LocalDate end, 
       @RequestParam(name = "min", required = false) 
       Float min) {
     return reportService.getShopByFilters(start, end, min);
@@ -44,10 +44,10 @@ public class ReportController {
   public ReportDto getReportByDate(
       @RequestParam(name = "start", required = true) 
       @DateTimeFormat(pattern = "dd/MM/yyyy") 
-      Date start,
+      LocalDate start,
       @RequestParam(name = "end", required = true) 
       @DateTimeFormat(pattern = "dd/MM/yyyy") 
-      Date end) {
+      LocalDate end) {
     return reportService.getReportByDate(start, end);
   }
 }

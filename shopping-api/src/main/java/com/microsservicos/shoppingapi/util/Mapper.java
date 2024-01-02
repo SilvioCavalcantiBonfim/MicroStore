@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.microsservicos.dto.ItemDto;
-import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ShopOutputDto;
 import com.microsservicos.shoppingapi.model.Item;
 import com.microsservicos.shoppingapi.model.Shop;
 
@@ -36,20 +36,20 @@ public final class Mapper{
     }
   }
 
-  public static ShopDto shopToShopDto(Shop shop){
+  public static ShopOutputDto shopToShopDto(Shop shop){
     try {
       List<ItemDto> itens = new ArrayList<>();
       if (Objects.nonNull(shop.getItens())) {
         shop.getItens().stream().map(Mapper::itemToItemDto).forEach(itens::add);
       }
-      return new ShopDto(shop.getUserIdentifier(), shop.getTotal(), shop.getDate(),
+      return new ShopOutputDto(shop.getUserIdentifier(), shop.getTotal(), shop.getDate(),
           itens);
     } catch (RuntimeException e) {
       throw new IllegalArgumentException("Invalid argument provided.");
     }
   }
   
-  public static Shop shopDtoToShop(@Valid ShopDto shopDto){
+  public static Shop shopDtoToShop(@Valid ShopOutputDto shopDto){
     try {
       Shop shop = new Shop();
       shop.setUserIdentifier(shopDto.userIdentifier());

@@ -49,7 +49,7 @@ public class UserApiIntegrationTest {
       "joao.silva@example.com",
       "11987654321",
       LocalDateTime.of(2023, 12, 31, 23, 59, 59),
-      "********-****-****-****-************");
+      "139cdb41-5fab-4283-8d07-a8b42960af48");
 
   @Autowired
   private MockMvc mockMvc;
@@ -66,7 +66,7 @@ public class UserApiIntegrationTest {
     mockMvc.perform(MockMvcRequestBuilders.get("/user").contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(List.of(USER_1))));
+        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(List.of(USER_1.obfuscate()))));
   }
 
   @Test
@@ -77,7 +77,7 @@ public class UserApiIntegrationTest {
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(USER_1)));
+        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(USER_1.obfuscate())));
   }
 
   @Test
@@ -98,7 +98,7 @@ public class UserApiIntegrationTest {
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(USER_1)));
+        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(USER_1.obfuscate())));
   }
 
   @Test
@@ -147,7 +147,7 @@ public class UserApiIntegrationTest {
     mockMvc.perform(MockMvcRequestBuilders.get("/user/search?name=%").contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(List.of(USER_1))));
+        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(List.of(USER_1.obfuscate()))));
   }
 
   @Test
@@ -156,7 +156,7 @@ public class UserApiIntegrationTest {
     mockMvc.perform(MockMvcRequestBuilders.get("/user/search?name=Jo%").contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(List.of(USER_1))));
+        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(List.of(USER_1.obfuscate()))));
   }
 
   @Test

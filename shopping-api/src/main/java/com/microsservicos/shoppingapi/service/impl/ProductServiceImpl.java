@@ -7,7 +7,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.microsservicos.dto.product.ProductDto;
+import com.microsservicos.dto.ProductDto;
 import com.microsservicos.exception.ProductNotFoundException;
 import com.microsservicos.shoppingapi.service.ProductService;
 

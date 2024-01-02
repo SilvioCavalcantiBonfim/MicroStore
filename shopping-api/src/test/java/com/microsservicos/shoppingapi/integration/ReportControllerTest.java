@@ -1,7 +1,8 @@
 package com.microsservicos.shoppingapi.integration;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsservicos.dto.ItemDto;
 import com.microsservicos.dto.ReportDto;
-import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ShopOutputDto;
 
 @SpringBootTest(properties = {
     "spring.flyway.locations=classpath:db/migration,classpath:db/migration-test",
@@ -52,16 +53,16 @@ public class ReportControllerTest {
 
   private static ItemDto ITEM1;
   private static ItemDto ITEM2;
-  private static ShopDto SHOP1;
-  private static ShopDto SHOP2;
+  private static ShopOutputDto SHOP1;
+  private static ShopOutputDto SHOP2;
 
   @BeforeAll
   private static void setup() throws ParseException {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     ITEM1 = new ItemDto("video-game", 2001.0f, 1);
     ITEM2 = new ItemDto("video-game", 20.0f, 2);
-    SHOP1 = new ShopDto("12345678910", 2001.0, sdf.parse("2023-12-31 01:51:36.789"), List.of(ITEM1));
-    SHOP2 = new ShopDto("12345678910", 20.0, sdf.parse("2020-12-31 01:51:36.789"), List.of(ITEM2));
+    SHOP1 = new ShopOutputDto("12345678910", 2001.0, LocalDateTime.parse("2023-12-31 01:51:36.789", formatter), List.of(ITEM1));
+    SHOP2 = new ShopOutputDto("12345678910", 20.0, LocalDateTime.parse("2020-12-31 01:51:36.789", formatter), List.of(ITEM2));
   }
 
   @Test

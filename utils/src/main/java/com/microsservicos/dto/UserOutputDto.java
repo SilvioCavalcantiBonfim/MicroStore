@@ -12,6 +12,6 @@ public record UserOutputDto(
     String key) {
 
     public UserOutputDto obfuscate(){
-      return new UserOutputDto(name, cpf, address, email, phone, register, key.replaceAll("[0-9a-fA-F]", "*"));
+      return new UserOutputDto(name, Obfuscator.obfuscate(cpf), address, email, phone, register, Obfuscator.obfuscate(key));
     }
 }

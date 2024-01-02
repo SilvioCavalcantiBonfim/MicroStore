@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +18,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.microsservicos.dto.CategoryDto;
 import com.microsservicos.dto.ItemDto;
 import com.microsservicos.dto.ItemInputDto;
-import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ProductDto;
+import com.microsservicos.dto.ShopOutputDto;
 import com.microsservicos.dto.ShopInputDto;
 import com.microsservicos.dto.UserOutputDto;
-import com.microsservicos.dto.product.CategoryDto;
-import com.microsservicos.dto.product.ProductDto;
 import com.microsservicos.exception.IllegalProductException;
 import com.microsservicos.exception.ShopNotFoundException;
 import com.microsservicos.exception.UserNotFoundException;
@@ -56,14 +55,14 @@ public class ShopServiceImplTest {
   @InjectMocks
   private ShopServiceImpl shopService;
 
-  private static ShopDto ORDER_1_DTO;
+  private static ShopOutputDto ORDER_1_DTO;
   private static Shop ORDER_1 = new Shop();
-  private static ShopDto ORDER_2_DTO;
+  private static ShopOutputDto ORDER_2_DTO;
   private static Shop ORDER_2 = new Shop();
 
   private static ShopInputDto ORDER_INPUT;
 
-  private static Date date = new Date();
+  private static LocalDateTime date = LocalDateTime.now();
 
   private static UserOutputDto user;
 
@@ -85,7 +84,7 @@ public class ShopServiceImplTest {
     ITEM_2.setPrice(5.5f);
     ITEM_2.setAmount(2);
 
-    ORDER_1_DTO = new ShopDto("ABC123", 10.0, date, List.of(ITEM_1_DTO, ITEM_2_DTO));
+    ORDER_1_DTO = new ShopOutputDto("ABC123", 10.0, date, List.of(ITEM_1_DTO, ITEM_2_DTO));
 
     ORDER_1.setId(1L);
     ORDER_1.setUserIdentifier("ABC123");
@@ -93,7 +92,7 @@ public class ShopServiceImplTest {
     ORDER_1.setDate(date);
     ORDER_1.setItens(List.of(ITEM_1, ITEM_2));
 
-    ORDER_2_DTO = new ShopDto("DEF456", 0.0, date, List.of(ITEM_2_DTO));
+    ORDER_2_DTO = new ShopOutputDto("DEF456", 0.0, date, List.of(ITEM_2_DTO));
 
     ORDER_2.setId(2L);
     ORDER_2.setUserIdentifier("DEF456");
@@ -108,7 +107,7 @@ public class ShopServiceImplTest {
   public void getAllShopSuccessTest() {
     when(shopRepository.findAll()).thenReturn(List.of(ORDER_1, ORDER_2));
 
-    List<ShopDto> result = shopService.getAll();
+    List<ShopOutputDto> result = shopService.getAll();
     assertThat(result)
         .extracting("userIdentifier", "total", "date", "itens")
         .contains(
@@ -122,7 +121,7 @@ public class ShopServiceImplTest {
     when(shopRepository.findAllByUserIdentifier(any())).thenReturn(List.of(ORDER_1));
     when(userService.getUserByCpf(anyString(), anyString())).thenReturn(user);
 
-    List<ShopDto> result = shopService.getByUser("ABC123", "0000");
+    List<ShopOutputDto> result = shopService.getByUser("ABC123", "0000");
     assertThat(result)
         .extracting("userIdentifier", "total", "date", "itens")
         .contains(
@@ -134,7 +133,7 @@ public class ShopServiceImplTest {
   public void getByDateSuccessTest() {
     when(shopRepository.findAllByDateAfter(any())).thenReturn(List.of(ORDER_1, ORDER_2));
 
-    List<ShopDto> result = shopService.getByDate(date);
+    List<ShopOutputDto> result = shopService.getByDate(date.toLocalDate());
     assertThat(result)
         .extracting("userIdentifier", "total", "date", "itens")
         .contains(
@@ -147,7 +146,7 @@ public class ShopServiceImplTest {
   public void findShopByIdSuccessTest() {
     when(shopRepository.findById(any())).thenReturn(Optional.of(ORDER_1));
 
-    ShopDto result = shopService.findById(1L);
+    ShopOutputDto result = shopService.findById(1L);
     assertThat(result).isEqualTo(ORDER_1_DTO.obfuscate());
   }
 
@@ -186,7 +185,7 @@ public class ShopServiceImplTest {
     when(shopRepository.save(any())).thenReturn(ORDER_2);
     when(productService.getProductByIdentifier(anyString())).thenReturn(product);
 
-    ShopDto result = shopService.save(ORDER_INPUT, "0000");
+    ShopOutputDto result = shopService.save(ORDER_INPUT, "0000");
 
     assertThat(result).isEqualTo(ORDER_2_DTO);
 

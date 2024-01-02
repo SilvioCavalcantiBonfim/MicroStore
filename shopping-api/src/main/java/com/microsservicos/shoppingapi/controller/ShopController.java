@@ -1,6 +1,7 @@
 package com.microsservicos.shoppingapi.controller;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ShopOutputDto;
 import com.microsservicos.dto.ShopInputDto;
 import com.microsservicos.shoppingapi.service.ShopService;
 
@@ -33,33 +34,36 @@ public class ShopController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<ShopDto> getAll() {
+  public List<ShopOutputDto> getAll() {
     return shopService.getAll();
   }
 
   @GetMapping("/shopByUser/{userIdentifier}")
   @ResponseStatus(HttpStatus.OK)
-  public List<ShopDto> getByUser(@PathVariable(name = "userIdentifier") String userIdentifier,
+  public List<ShopOutputDto> getByUser(@PathVariable(name = "userIdentifier") String userIdentifier,
       @RequestHeader(name = "key", required = true) String key) {
     return shopService.getByUser(userIdentifier, key);
   }
 
   @GetMapping("/shopByDate")
   @ResponseStatus(HttpStatus.OK)
-  public List<ShopDto> getByDate(
-      @RequestParam(name = "after", required = true) @DateTimeFormat(pattern = "dd-MM-yyyy") Date date) {
-    return shopService.getByDate(date);
+  public List<ShopOutputDto> getByDate(
+      @RequestParam(name = "after", required = true) 
+      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, fallbackPatterns = { "yyyy-MM-dd" }) 
+      final LocalDateTime date
+  ) {
+    return shopService.getByDate(date.toLocalDate());
   }
 
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ShopDto getById(@PathVariable(name = "id") Long id) {
+  public ShopOutputDto getById(@PathVariable(name = "id") Long id) {
     return shopService.findById(id);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ShopDto createShop(@Valid @RequestBody ShopInputDto shopDto,
+  public ShopOutputDto createShop(@Valid @RequestBody ShopInputDto shopDto,
       @RequestHeader(name = "key", required = true) String key) {
     return shopService.save(shopDto, key);
   }

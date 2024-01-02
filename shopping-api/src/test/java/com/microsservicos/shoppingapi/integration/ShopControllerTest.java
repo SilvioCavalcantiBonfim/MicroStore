@@ -6,9 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -29,13 +28,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsservicos.dto.CategoryDto;
 import com.microsservicos.dto.ItemDto;
 import com.microsservicos.dto.ItemInputDto;
-import com.microsservicos.dto.ShopDto;
+import com.microsservicos.dto.ProductDto;
+import com.microsservicos.dto.ShopOutputDto;
 import com.microsservicos.dto.ShopInputDto;
 import com.microsservicos.dto.UserOutputDto;
-import com.microsservicos.dto.product.CategoryDto;
-import com.microsservicos.dto.product.ProductDto;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -75,8 +74,8 @@ public class ShopControllerTest {
 
   private static ItemDto ITEM1;
   private static ItemDto ITEM2;
-  private static ShopDto SHOP1;
-  private static ShopDto SHOP2;
+  private static ShopOutputDto SHOP1;
+  private static ShopOutputDto SHOP2;
 
   private static UserOutputDto user = new UserOutputDto("user test", "12345678910", "street B", "test@email.com",
       "900000000", LocalDateTime.now(), KEY);
@@ -86,11 +85,11 @@ public class ShopControllerTest {
     
   @BeforeAll
   private static void setup() throws ParseException {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     ITEM1 = new ItemDto("video-game", 2001.0f, 1);
     ITEM2 = new ItemDto("video-game", 20.0f, 2);
-    SHOP1 = new ShopDto("12345678910", 2001.0, sdf.parse("2023-12-31 01:51:36.789"), List.of(ITEM1));
-    SHOP2 = new ShopDto("12345678910", 20.0, sdf.parse("2020-12-31 01:51:36.789"), List.of(ITEM2));
+    SHOP1 = new ShopOutputDto("12345678910", 2001.0, LocalDateTime.parse("2023-12-31 01:51:36.789", formatter), List.of(ITEM1));
+    SHOP2 = new ShopOutputDto("12345678910", 20.0, LocalDateTime.parse("2020-12-31 01:51:36.789", formatter), List.of(ITEM2));
   }
 
   @Test
@@ -221,7 +220,7 @@ public class ShopControllerTest {
   @Test
   public void shopByDateSuccessNonData() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/shopByDate")
-        .param("after", "31-12-2028")
+        .param("after", "2024-01-02T00:00:00")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -293,7 +292,7 @@ public class ShopControllerTest {
   @Test
   public void createShopUserItemIsEmpty() throws Exception {
 
-    ShopDto body = new ShopDto(user.cpf(), 100.0, new Date(), List.of());
+    ShopOutputDto body = new ShopOutputDto(user.cpf(), 100.0, LocalDateTime.now(), List.of());
 
     when(restTemplate
         .getForEntity(eq("http://localhost:8080/user/cpf/12345678910?key=139cdb41-5fab-4283-8d07-a8b42960af48"), any()))
@@ -311,7 +310,7 @@ public class ShopControllerTest {
   public void createShopUserUserIdentifierNull() throws Exception {
 
     ItemDto itemBody = new ItemDto("video-game", 20.0f, 2);
-    ShopDto body = new ShopDto(null, 100.0, new Date(), List.of(itemBody));
+    ShopOutputDto body = new ShopOutputDto(null, 100.0, LocalDateTime.now(), List.of(itemBody));
 
     mockMvc.perform(MockMvcRequestBuilders.post("/shopping")
         .content(objectMapper.writeValueAsString(body))
@@ -325,7 +324,7 @@ public class ShopControllerTest {
   public void createShopUserTotalNull() throws Exception {
 
     ItemDto itemBody = new ItemDto("video-game", 20.0f, 2);
-    ShopDto body = new ShopDto(user.cpf(), null, new Date(), List.of(itemBody));
+    ShopOutputDto body = new ShopOutputDto(user.cpf(), null, LocalDateTime.now(), List.of(itemBody));
 
     mockMvc.perform(MockMvcRequestBuilders.post("/shopping")
         .content(objectMapper.writeValueAsString(body))
@@ -339,7 +338,7 @@ public class ShopControllerTest {
   public void createShopUserDateNull() throws Exception {
 
     ItemDto itemBody = new ItemDto("video-game", 20.0f, 2);
-    ShopDto body = new ShopDto(user.cpf(), 100.0, null, List.of(itemBody));
+    ShopOutputDto body = new ShopOutputDto(user.cpf(), 100.0, null, List.of(itemBody));
 
     mockMvc.perform(MockMvcRequestBuilders.post("/shopping")
         .content(objectMapper.writeValueAsString(body))
@@ -352,7 +351,7 @@ public class ShopControllerTest {
   @Test
   public void createShopUserItensNull() throws Exception {
 
-    ShopDto body = new ShopDto(user.cpf(), 100.0, new Date(), null);
+    ShopOutputDto body = new ShopOutputDto(user.cpf(), 100.0, LocalDateTime.now(), null);
 
     when(restTemplate
         .getForEntity(eq("http://localhost:8080/user/cpf/12345678910?key=139cdb41-5fab-4283-8d07-a8b42960af48"), any()))
@@ -370,7 +369,7 @@ public class ShopControllerTest {
   public void createShopUserNoKey() throws Exception {
 
     ItemDto itemBody = new ItemDto("video-game", 20.0f, 2);
-    ShopDto body = new ShopDto(user.cpf(), 100.0, new Date(), List.of(itemBody));
+    ShopOutputDto body = new ShopOutputDto(user.cpf(), 100.0, LocalDateTime.now(), List.of(itemBody));
 
     mockMvc.perform(MockMvcRequestBuilders.post("/shopping")
         .content(objectMapper.writeValueAsString(body))

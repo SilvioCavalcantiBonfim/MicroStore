@@ -1,4 +1,4 @@
-package com.microsservicos.dto.product;
+package com.microsservicos.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

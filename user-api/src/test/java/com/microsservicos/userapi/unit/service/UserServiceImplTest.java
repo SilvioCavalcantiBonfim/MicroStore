@@ -46,7 +46,7 @@ public class UserServiceImplTest {
   public void setup() {
     user1.setId(1L);
     user1.setName("User 1");
-    user1.setCpf("00000000000");
+    user1.setCpf("000******00");
     user1.setAddress("address");
     user1.setEmail("user1@teste.com");
     user1.setPhone("000000000");
@@ -55,7 +55,7 @@ public class UserServiceImplTest {
 
     user2.setId(2L);
     user2.setName("User 2");
-    user2.setCpf("00000000001");
+    user2.setCpf("000******01");
     user2.setEmail("user2@teste.com");
     user2.setAddress("address");
     user2.setPhone("000000000");
@@ -74,8 +74,8 @@ public class UserServiceImplTest {
     assertThat(output)
         .extracting("name", "cpf", "address", "email", "phone", "register")
         .contains(
-            new Tuple("User 1", "00000000000", "address", "user1@teste.com", "000000000", register),
-            new Tuple("User 2", "00000000001", "address", "user2@teste.com", "000000000", register));
+            new Tuple("User 1", "000******00", "address", "user1@teste.com", "000000000", register),
+            new Tuple("User 2", "000******01", "address", "user2@teste.com", "000000000", register));
 
   }
 
@@ -90,8 +90,8 @@ public class UserServiceImplTest {
     assertThat(output)
         .extracting("name", "cpf", "address", "email", "phone", "register")
         .contains(
-            new Tuple("User 1", "00000000000", "address", "user1@teste.com", "000000000", register),
-            new Tuple("User 2", "00000000001", "address", "user2@teste.com", "000000000", register));
+            new Tuple("User 1", "000******00", "address", "user1@teste.com", "000000000", register),
+            new Tuple("User 2", "000******01", "address", "user2@teste.com", "000000000", register));
 
   }
 

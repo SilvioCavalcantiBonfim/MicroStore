@@ -1,7 +1,7 @@
 package com.microsservicos.shoppingapi.repository.impl;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,7 +19,7 @@ public class ReportRepositoryImpl implements ReportRepository {
   private EntityManager entityManager;
 
   @Override
-  public List<Shop> getShopByFilters(Date start, Date end, Float min) {
+  public List<Shop> getShopByFilters(LocalDate start, LocalDate end, Float min) {
     validateStartDate(start);
     StringBuilder str = createStringQuery(end, min);
     Query query = createQueryWithParameters(start, end, min, str);
@@ -27,13 +27,13 @@ public class ReportRepositoryImpl implements ReportRepository {
     return result.stream().map(Shop.class::cast).toList();
   }
 
-  private void validateStartDate(Date start) {
+  private void validateStartDate(LocalDate start) {
     if (Objects.isNull(start)) {
       throw new IllegalArgumentException("Start date cannot be null.");
     }
   }
 
-  private Query createQueryWithParameters(Date start, Date end, Float min, StringBuilder str) {
+  private Query createQueryWithParameters(LocalDate start, LocalDate end, Float min, StringBuilder str) {
     Query query = entityManager.createQuery(str.toString());
     query.setParameter("start", start);
     if (end != null) {
@@ -45,7 +45,7 @@ public class ReportRepositoryImpl implements ReportRepository {
     return query;
   }
 
-  private StringBuilder createStringQuery(Date end, Float min) {
+  private StringBuilder createStringQuery(LocalDate end, Float min) {
     StringBuilder str = new StringBuilder();
     str.append("SELECT s FROM shop s WHERE s.date >= CAST(:start AS DATE)");
     if (end != null) {
@@ -58,7 +58,7 @@ public class ReportRepositoryImpl implements ReportRepository {
   }
 
   @Override
-  public ReportDto getReportByDate(Date start, Date end) {
+  public ReportDto getReportByDate(LocalDate start, LocalDate end) {
     validateStartDate(start);
     StringBuilder strQuery = new StringBuilder();
     strQuery.append(
