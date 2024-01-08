@@ -24,7 +24,7 @@ spec:
         app: shopping-api
     spec:
       containers:
-      - image: silviocavalcanti/shopping-api:1.1.0
+      - image: silviocavalcanti/store:shopping-api-1.1.0
         name: shopping-api
         #resource of pod
         resources:
