@@ -39,44 +39,44 @@ public class ShopServiceImpl implements ShopService {
   }
 
   @Override
-  public List<ShopOutputDto> getAll() {
-    return shopRepository.findAll().stream().map(Mapper::shopToShopDto).map(ShopOutputDto::obfuscate).toList();
+  public List<ShopOutputDto> retrieveAllShops() {
+    return shopRepository.findAll().stream().map(Mapper::convertShopToDto).map(ShopOutputDto::obfuscate).toList();
   }
 
   @Override
-  public ShopOutputDto findById(Long id) {
+  public ShopOutputDto retrieveShopById(Long id) {
     Shop shop = shopRepository.findById(id).orElseThrow(() -> new ShopNotFoundException());
-    return Mapper.shopToShopDto(shop).obfuscate();
+    return Mapper.convertShopToDto(shop).obfuscate();
   }
 
   @Override
-  public ShopOutputDto save(ShopInputDto shopDto, String key) {
+  public ShopOutputDto addShop(ShopInputDto shopDto, String key) {
     validateUserExistence(shopDto.userIdentifier(), key);
-    List<ProductDto> allProducts = feacthAllProducts(shopDto.items());
+    List<ProductDto> allProducts = fetchAllProducts(shopDto.items());
     Double total = calculateTotal(allProducts, shopDto.items());
-    return saveShop(shopDto, allProducts, total);
+    return persistShop(shopDto, allProducts, total);
   }
 
   private void validateUserExistence(String cpf, String key) {
-    if (Objects.isNull(userService.getUserByCpf(cpf, key))) {
+    if (Objects.isNull(userService.retrieveUserByCpf(cpf, key))) {
       throw new UserNotFoundException();
     }
   }
 
-  private List<ProductDto> feacthAllProducts(List<ItemInputDto> itens) {
+  private List<ProductDto> fetchAllProducts(List<ItemInputDto> itens) {
     if (Objects.isNull(itens) || itens.isEmpty()) {
       throw new IllegalProductException();
     }
-    List<ProductDto> allProducts = itens.stream().map(this::feacthProductIdentifier).toList();
+    List<ProductDto> allProducts = itens.stream().map(this::fetchProductByIdentifier).toList();
     return allProducts;
   }
 
-  private ProductDto feacthProductIdentifier(ItemInputDto item) {
-    return feacthProduct(item.productIdentifier());
+  private ProductDto fetchProductByIdentifier(ItemInputDto item) {
+    return fetchProduct(item.productIdentifier());
   }
 
-  private ProductDto feacthProduct(String productIdentifier) {
-    ProductDto product = productService.getProductByIdentifier(productIdentifier);
+  private ProductDto fetchProduct(String productIdentifier) {
+    ProductDto product = productService.retrieveProductByIdentifier(productIdentifier);
     if (Objects.isNull(product)) {
       throw new IllegalProductException();
     }
@@ -93,13 +93,13 @@ public class ShopServiceImpl implements ShopService {
     return totalPriceStream.build().sum();
   }
 
-  private ShopOutputDto saveShop(ShopInputDto shopDto, List<ProductDto> allProducts, Double total) {
-    Shop shop = createEntityShop(shopDto, allProducts, total);
+  private ShopOutputDto persistShop(ShopInputDto shopDto, List<ProductDto> allProducts, Double total) {
+    Shop shop = createShopEntity(shopDto, allProducts, total);
 
-    return Mapper.shopToShopDto(shopRepository.save(shop));
+    return Mapper.convertShopToDto(shopRepository.save(shop));
   }
 
-  private Shop createEntityShop(ShopInputDto shopDto, List<ProductDto> allProducts, Double total) {
+  private Shop createShopEntity(ShopInputDto shopDto, List<ProductDto> allProducts, Double total) {
     Shop shop = new Shop();
     shop.setTotal(total);
     shop.setDate(LocalDateTime.now());
@@ -119,19 +119,19 @@ public class ShopServiceImpl implements ShopService {
   }
 
   @Override
-  public List<ShopOutputDto> getByUser(String userIdentifier, String key) {
+  public List<ShopOutputDto> retrieveShopsByUser(String userIdentifier, String key) {
     validateUserExistence(userIdentifier, key);
     return shopRepository.findAllByUserIdentifier(userIdentifier)
         .stream()
-        .map(Mapper::shopToShopDto)
+        .map(Mapper::convertShopToDto)
         .toList();
   }
 
   @Override
-  public List<ShopOutputDto> getByDate(LocalDate date) {
-    return shopRepository.findAllByDateAfter(date)
+  public List<ShopOutputDto> retrieveShopsByDate(LocalDate date) {
+    return shopRepository.findAllByDateAfter(date.atStartOfDay())
         .stream()
-        .map(Mapper::shopToShopDto)
+        .map(Mapper::convertShopToDto)
         .map(ShopOutputDto::obfuscate)
         .toList();
   }

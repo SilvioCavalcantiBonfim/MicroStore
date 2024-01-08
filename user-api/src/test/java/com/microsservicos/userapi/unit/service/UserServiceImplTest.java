@@ -69,7 +69,7 @@ public class UserServiceImplTest {
 
     when(userRepository.findAll()).thenReturn(List.of(user1, user2));
 
-    List<UserOutputDto> output = userService.getAllUsers();
+    List<UserOutputDto> output = userService.retrieveAllUsers();
 
     assertThat(output)
         .extracting("name", "cpf", "address", "email", "phone", "register")
@@ -85,7 +85,7 @@ public class UserServiceImplTest {
 
     when(userRepository.queryByNameLike(any())).thenReturn(List.of(user1, user2));
 
-    List<UserOutputDto> output = userService.findUsersByName("test");
+    List<UserOutputDto> output = userService.retrieveUsersByName("test");
 
     assertThat(output)
         .extracting("name", "cpf", "address", "email", "phone", "register")
@@ -103,7 +103,7 @@ public class UserServiceImplTest {
 
     when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(user1));
 
-    UserOutputDto output = userService.findUserById(id);
+    UserOutputDto output = userService.retrieveUserById(id);
 
     assertThat(output).usingRecursiveComparison()
         .comparingOnlyFields("name", "cpf", "address", "email", "phone", "register").isEqualTo(user1);
@@ -115,7 +115,7 @@ public class UserServiceImplTest {
 
     when(userRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
-    assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> userService.findUserById(0L));
+    assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> userService.retrieveUserById(0L));
   }
 
   @Test
@@ -124,7 +124,7 @@ public class UserServiceImplTest {
 
     when(userRepository.save(Mockito.any())).thenReturn(user1);
 
-    UserOutputDto output = userService.createUser(
+    UserOutputDto output = userService.registerNewUser(
         new UserInputDto(user1.getName(), user1.getCpf(), user1.getAddress(), user1.getEmail(), user1.getPhone()));
 
     assertThat(output).usingRecursiveComparison()
@@ -139,7 +139,7 @@ public class UserServiceImplTest {
 
     when(userRepository.existsByCpf(any())).thenReturn(true);
 
-    assertThatExceptionOfType(CpfAlreadyRegisteredException.class).isThrownBy(() -> userService.createUser(userDto));
+    assertThatExceptionOfType(CpfAlreadyRegisteredException.class).isThrownBy(() -> userService.registerNewUser(userDto));
   }
 
   @Test
@@ -148,7 +148,7 @@ public class UserServiceImplTest {
 
     when(userRepository.findByCpfAndKey(any(), any())).thenReturn(Optional.of(user1));
 
-    UserOutputDto output = userService.findUserByCpf(user1.getCpf(), user1.getKey());
+    UserOutputDto output = userService.retrieveUserByCpf(user1.getCpf(), user1.getKey());
 
     assertThat(output).usingRecursiveComparison()
         .comparingOnlyFields("name", "cpf", "address", "email", "phone", "register").isEqualTo(user1);
@@ -158,7 +158,7 @@ public class UserServiceImplTest {
   @DisplayName("Find user by CPF - Invalid CPF length")
   public void findByCpfUserInvalidLengthCpfTest() {
 
-    assertThatExceptionOfType(InvalidCpfLengthException.class).isThrownBy(() -> userService.findUserByCpf("123", "123"));
+    assertThatExceptionOfType(InvalidCpfLengthException.class).isThrownBy(() -> userService.retrieveUserByCpf("123", "123"));
   }
 
   @Test
@@ -168,7 +168,7 @@ public class UserServiceImplTest {
     when(userRepository.findByCpfAndKey(any(), any())).thenReturn(Optional.empty());
 
     assertThatExceptionOfType(UserNotFoundException.class)
-        .isThrownBy(() -> userService.findUserByCpf(user1.getCpf(), user1.getKey()));
+        .isThrownBy(() -> userService.retrieveUserByCpf(user1.getCpf(), user1.getKey()));
   }
 
   @Test
@@ -177,7 +177,7 @@ public class UserServiceImplTest {
 
     when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(user1));
 
-    assertThatNoException().isThrownBy(() -> userService.deleteUser(user1.getId()));
+    assertThatNoException().isThrownBy(() -> userService.removeUser(user1.getId()));
   }
 
   @Test
@@ -186,7 +186,7 @@ public class UserServiceImplTest {
 
     when(userRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
-    assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> userService.deleteUser(0L));
+    assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> userService.removeUser(0L));
   }
 
 }

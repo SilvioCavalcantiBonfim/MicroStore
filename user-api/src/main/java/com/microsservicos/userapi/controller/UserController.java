@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,37 +33,37 @@ public class UserController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<UserOutputDto> getAllUsers() {
-    return userService.getAllUsers();
+  public List<UserOutputDto> retrieveAllUsers() {
+    return userService.retrieveAllUsers();
   }
 
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public UserOutputDto getUserById(@PathVariable("id") Long id) {
-    return userService.findUserById(id);
+  public UserOutputDto retrieveUserById(@PathVariable("id") Long id) {
+    return userService.retrieveUserById(id);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public UserOutputDto createUser(@Valid @RequestBody UserInputDto user) {
-    return userService.createUser(user);
+  public UserOutputDto addNewUser(@Valid @RequestBody UserInputDto user) {
+    return userService.registerNewUser(user);
   }
 
   @GetMapping("/cpf/{cpf}")
   @ResponseStatus(HttpStatus.OK)
-  public UserOutputDto getUserByCPF(@PathVariable("cpf") String cpf, @RequestParam(name = "key", required = true) String key) {
-    return userService.findUserByCpf(cpf, key);
+  public UserOutputDto retrieveUserByCPF(@PathVariable("cpf") String cpf, @RequestHeader(name = "key", required = true) String key) {
+    return userService.retrieveUserByCpf(cpf, key);
   }
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteUserById(@PathVariable("id") long id) {
-    userService.deleteUser(id);
+  public void removeUserById(@PathVariable("id") long id) {
+    userService.removeUser(id);
   }
 
   @GetMapping("/search")
   @ResponseStatus(HttpStatus.OK)
-  public List<UserOutputDto> getUsersBySimilarName(@RequestParam(name = "name", required = true) String name) {
-    return userService.findUsersByName(name);
+  public List<UserOutputDto> retrieveUsersBySimilarName(@RequestParam(name = "name", required = true) String name) {
+    return userService.retrieveUsersByName(name);
   }
 }

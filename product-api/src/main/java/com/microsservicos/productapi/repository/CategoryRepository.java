@@ -5,8 +5,5 @@ import org.springframework.stereotype.Repository;
 
 import com.microsservicos.productapi.model.Category;
 
-
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Long> {
-  boolean existsById(Long id);
-}
+public interface CategoryRepository extends JpaRepository<Category, Long> {}

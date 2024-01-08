@@ -75,7 +75,7 @@ public class ProductServiceImplTest {
 
     when(productRepository.findAll()).thenReturn(List.of(product1, product2));
 
-    List<ProductDto> output = productService.getAllProducts();
+    List<ProductDto> output = productService.retrieveAllProducts();
 
     assertThat(output)
         .extracting("productIdentifier", "name", "description", "price", "category")
@@ -90,7 +90,7 @@ public class ProductServiceImplTest {
     when(categoryRepository.existsById(any())).thenReturn(true);
     when(productRepository.getByCategory(any())).thenReturn(List.of(product1));
 
-    List<ProductDto> output = productService.findProductsByCategoryId(1L);
+    List<ProductDto> output = productService.retrieveProductsByCategory(1L);
 
     assertThat(output)
         .extracting("productIdentifier", "name", "description", "price", "category")
@@ -103,7 +103,7 @@ public class ProductServiceImplTest {
 
     when(categoryRepository.existsById(any())).thenReturn(false);
 
-    assertThatExceptionOfType(CategoryNotFoundException.class).isThrownBy(() -> productService.findProductsByCategoryId(1L));
+    assertThatExceptionOfType(CategoryNotFoundException.class).isThrownBy(() -> productService.retrieveProductsByCategory(1L));
   }
 
   @Test
@@ -111,7 +111,7 @@ public class ProductServiceImplTest {
 
     when(productRepository.findByProductIdentifier(any())).thenReturn(Optional.of(product1));
 
-    ProductDto output = productService.findByProductIdentifier("product1");
+    ProductDto output = productService.retrieveProductByIdentifier("product1");
 
     assertThat(output).isEqualTo(product1Dto);
   }
@@ -121,7 +121,7 @@ public class ProductServiceImplTest {
 
     when(productRepository.findByProductIdentifier(any())).thenReturn(Optional.empty());
 
-    assertThatExceptionOfType(ProductNotFoundException.class).isThrownBy(() -> productService.findByProductIdentifier("product1"));
+    assertThatExceptionOfType(ProductNotFoundException.class).isThrownBy(() -> productService.retrieveProductByIdentifier("product1"));
   }
 
   @Test
@@ -129,7 +129,7 @@ public class ProductServiceImplTest {
 
     when(productRepository.findByProductIdentifier(any())).thenReturn(Optional.of(product1));
 
-    assertThatNoException().isThrownBy(() -> productService.deleteProduct("product1"));
+    assertThatNoException().isThrownBy(() -> productService.removeProductByIdentifier("product1"));
   }
 
   @Test
@@ -137,16 +137,16 @@ public class ProductServiceImplTest {
 
     when(productRepository.findByProductIdentifier(any())).thenReturn(Optional.empty());
 
-    assertThatExceptionOfType(ProductNotFoundException.class).isThrownBy(() -> productService.deleteProduct("product1"));
+    assertThatExceptionOfType(ProductNotFoundException.class).isThrownBy(() -> productService.removeProductByIdentifier("product1"));
   }
 
   @Test
   public void saveSuccessTest() {
 
-    when(categoryRepository.existsById(any())).thenReturn(true);
+    when(categoryRepository.findById(any())).thenReturn(Optional.of(product1.getCategory()));
     when(productRepository.save(any())).thenReturn(product1);
 
-    ProductDto output = productService.createProduct(product1Dto);
+    ProductDto output = productService.addProduct(product1Dto);
 
     assertThat(output).isEqualTo(product1Dto);
   }
@@ -154,8 +154,8 @@ public class ProductServiceImplTest {
   @Test
   public void saveExceptionTest() {
 
-    when(categoryRepository.existsById(any())).thenReturn(false);
+    when(categoryRepository.findById(any())).thenReturn(Optional.empty());
 
-    assertThatExceptionOfType(CategoryNotFoundException.class).isThrownBy(() -> productService.createProduct(product1Dto));
+    assertThatExceptionOfType(CategoryNotFoundException.class).isThrownBy(() -> productService.addProduct(product1Dto));
   }
 }

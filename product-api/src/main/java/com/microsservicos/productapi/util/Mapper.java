@@ -11,14 +11,14 @@ public final class Mapper {
   private Mapper() {
   }
 
-  public static CategoryDto categoryToCategoryDto(Category category) {
+  public static CategoryDto convertCategoryToDto(Category category) {
     if (category == null) {
       return null;
     }
     return new CategoryDto(category.getId(), category.getName());
   }
 
-  public static ProductDto productToProductDto(Product product) {
+  public static ProductDto convertProductToDto(Product product) {
     if (product == null) {
       return null;
     }
@@ -27,10 +27,10 @@ public final class Mapper {
         product.getName(),
         product.getDescription(),
         product.getPrice(),
-        Mapper.categoryToCategoryDto(product.getCategory()));
+        Mapper.convertCategoryToDto(product.getCategory()));
   }
 
-  public static Product productDtoToProduct(ProductDto productDto) {
+  public static Product convertDtoToProduct(ProductDto productDto) {
     if (productDto == null) {
       return null;
     }

@@ -26,24 +26,24 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public List<UserOutputDto> getAllUsers() {
+  public List<UserOutputDto> retrieveAllUsers() {
     List<User> all = userRepository.findAll();
-    return all.stream().map(Mapper::UserToUserOutputDto).map(UserOutputDto::obfuscate).toList();
+    return all.stream().map(Mapper::convertUserToDto).map(UserOutputDto::obfuscate).toList();
   }
 
   @Override
-  public UserOutputDto findUserById(Long id) {
+  public UserOutputDto retrieveUserById(Long id) {
     User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
-    return Mapper.UserToUserOutputDto(user).obfuscate();
+    return Mapper.convertUserToDto(user).obfuscate();
   }
 
   @Override
-  public UserOutputDto createUser(UserInputDto userDto) {
+  public UserOutputDto registerNewUser(UserInputDto userDto) {
     if (userRepository.existsByCpf(userDto.cpf())) {
       throw new CpfAlreadyRegisteredException();
     }
 
-    User userSaved = Mapper.UserInputDtoToUser(userDto);
+    User userSaved = Mapper.convertDtoToUser(userDto);
 
     userSaved.setKey(UUID.randomUUID().toString());
 
@@ -51,25 +51,25 @@ public class UserServiceImpl implements UserService {
     
     User user = userRepository.save(userSaved);
     
-    return Mapper.UserToUserOutputDto(user);
+    return Mapper.convertUserToDto(user);
   }
 
   @Override
-  public UserOutputDto findUserByCpf(String cpf, String key) {
+  public UserOutputDto retrieveUserByCpf(String cpf, String key) {
     if (cpf.length() != 11) {
       throw new InvalidCpfLengthException();
     }
     User user = userRepository.findByCpfAndKey(cpf, key).orElseThrow(() -> new UserNotFoundException());
-    return Mapper.UserToUserOutputDto(user).obfuscate();
+    return Mapper.convertUserToDto(user).obfuscate();
   }
   
   @Override
-  public List<UserOutputDto> findUsersByName(String name) {
-    return userRepository.queryByNameLike(name).stream().map(Mapper::UserToUserOutputDto).map(UserOutputDto::obfuscate).toList();
+  public List<UserOutputDto> retrieveUsersByName(String name) {
+    return userRepository.queryByNameLike(name).stream().map(Mapper::convertUserToDto).map(UserOutputDto::obfuscate).toList();
   }
 
   @Override
-  public void deleteUser(long id) {
+  public void removeUser(long id) {
     User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
     userRepository.delete(user);
   }

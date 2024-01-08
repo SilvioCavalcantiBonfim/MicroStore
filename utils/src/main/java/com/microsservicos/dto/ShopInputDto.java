@@ -8,5 +8,5 @@ import jakarta.validation.constraints.Pattern;
 
 public record ShopInputDto(
         @NotBlank(message = Message.CPF_BLANK) @Pattern(regexp = "^\\d{11}$", message = Message.CPF_LENGTH) String userIdentifier,
-        @NotNull List<ItemInputDto> items) {
+        @NotNull(message = Message.ITEMS_EMPTY) List<ItemInputDto> items) {
 }

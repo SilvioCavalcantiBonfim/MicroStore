@@ -9,9 +9,9 @@ Content-Type: application/json
 
 {
   "productIdentifier":"tv",
-  "name":"TV",
+  "name":"TV LCD",
   "price": 1000,
-  "description": "Uma TV",
+  "description": "Uma TV LCD",
   "category":{
     "id": 1
   } 

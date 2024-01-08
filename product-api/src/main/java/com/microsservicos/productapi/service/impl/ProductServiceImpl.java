@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.microsservicos.dto.ProductDto;
 import com.microsservicos.exception.CategoryNotFoundException;
 import com.microsservicos.exception.ProductNotFoundException;
+import com.microsservicos.productapi.model.Category;
 import com.microsservicos.productapi.model.Product;
 import com.microsservicos.productapi.repository.CategoryRepository;
 import com.microsservicos.productapi.repository.ProductRepository;
@@ -24,35 +25,34 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public List<ProductDto> getAllProducts() {
-    return productRepository.findAll().stream().map(Mapper::productToProductDto).toList();
+  public List<ProductDto> retrieveAllProducts() {
+    return productRepository.findAll().stream().map(Mapper::convertProductToDto).toList();
   }
 
   @Override
-  public List<ProductDto> findProductsByCategoryId(Long id) {
+  public List<ProductDto> retrieveProductsByCategory(Long id) {
     if (!categoryRepository.existsById(id)) {
       throw new CategoryNotFoundException();
     }
-    return productRepository.getByCategory(id).stream().map(Mapper::productToProductDto).toList();
+    return productRepository.getByCategory(id).stream().map(Mapper::convertProductToDto).toList();
   }
 
   @Override
-  public ProductDto findByProductIdentifier(String productIdentifier) {
+  public ProductDto retrieveProductByIdentifier(String productIdentifier) {
     Product product = productRepository.findByProductIdentifier(productIdentifier).orElseThrow(() -> new ProductNotFoundException());
-    return Mapper.productToProductDto(product);
+    return Mapper.convertProductToDto(product);
   }
 
   @Override
-  public ProductDto createProduct(ProductDto productDto) {
-    if (!categoryRepository.existsById(productDto.category().id())) {
-      throw new CategoryNotFoundException();
-    }
-    Product product = productRepository.save(Mapper.productDtoToProduct(productDto));
-    return Mapper.productToProductDto(product);
+  public ProductDto addProduct(ProductDto productDto) {
+    Category category = categoryRepository.findById(productDto.category().id()).orElseThrow(() -> new CategoryNotFoundException());
+    Product product = productRepository.save(Mapper.convertDtoToProduct(productDto));
+    product.setCategory(category);
+    return Mapper.convertProductToDto(product);
   }
 
   @Override
-  public void deleteProduct(String productIdentifier) {
+  public void removeProductByIdentifier(String productIdentifier) {
     Product product = productRepository.findByProductIdentifier(productIdentifier).orElseThrow(() -> new ProductNotFoundException());
     productRepository.delete(product);
   }

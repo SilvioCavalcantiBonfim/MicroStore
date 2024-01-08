@@ -5,9 +5,9 @@ import java.util.List;
 import com.microsservicos.dto.ProductDto;
 
 public interface ProductService {
-  List<ProductDto> getAllProducts();
-  List<ProductDto> findProductsByCategoryId(Long id);
-  ProductDto findByProductIdentifier(String productIdentifier);
-  ProductDto createProduct(ProductDto productDto);
-  void deleteProduct(String id);
+  List<ProductDto> retrieveAllProducts();
+  List<ProductDto> retrieveProductsByCategory(Long id);
+  ProductDto retrieveProductByIdentifier(String productIdentifier);
+  ProductDto addProduct(ProductDto productDto);
+  void removeProductByIdentifier(String id);
 }

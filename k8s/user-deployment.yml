@@ -24,7 +24,7 @@ spec:
         app: user-api
     spec:
       containers:
-      - image: silviocavalcanti/user-api:1.0.0
+      - image: silviocavalcanti/user-api:1.1.0
         name: user-api
         #resource of pod
         resources:

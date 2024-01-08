@@ -107,7 +107,7 @@ public class ShopServiceImplTest {
   public void getAllShopSuccessTest() {
     when(shopRepository.findAll()).thenReturn(List.of(ORDER_1, ORDER_2));
 
-    List<ShopOutputDto> result = shopService.getAll();
+    List<ShopOutputDto> result = shopService.retrieveAllShops();
     assertThat(result)
         .extracting("userIdentifier", "total", "date", "itens")
         .contains(
@@ -119,9 +119,9 @@ public class ShopServiceImplTest {
   @Test
   public void getByUserSuccessTest() {
     when(shopRepository.findAllByUserIdentifier(any())).thenReturn(List.of(ORDER_1));
-    when(userService.getUserByCpf(anyString(), anyString())).thenReturn(user);
+    when(userService.retrieveUserByCpf(anyString(), anyString())).thenReturn(user);
 
-    List<ShopOutputDto> result = shopService.getByUser("ABC123", "0000");
+    List<ShopOutputDto> result = shopService.retrieveShopsByUser("ABC123", "0000");
     assertThat(result)
         .extracting("userIdentifier", "total", "date", "itens")
         .contains(
@@ -133,7 +133,7 @@ public class ShopServiceImplTest {
   public void getByDateSuccessTest() {
     when(shopRepository.findAllByDateAfter(any())).thenReturn(List.of(ORDER_1, ORDER_2));
 
-    List<ShopOutputDto> result = shopService.getByDate(date.toLocalDate());
+    List<ShopOutputDto> result = shopService.retrieveShopsByDate(date.toLocalDate());
     assertThat(result)
         .extracting("userIdentifier", "total", "date", "itens")
         .contains(
@@ -146,7 +146,7 @@ public class ShopServiceImplTest {
   public void findShopByIdSuccessTest() {
     when(shopRepository.findById(any())).thenReturn(Optional.of(ORDER_1));
 
-    ShopOutputDto result = shopService.findById(1L);
+    ShopOutputDto result = shopService.retrieveShopById(1L);
     assertThat(result).isEqualTo(ORDER_1_DTO.obfuscate());
   }
 
@@ -154,38 +154,38 @@ public class ShopServiceImplTest {
   public void findShopByIdNotFoundTest() {
     when(shopRepository.findById(any())).thenReturn(Optional.empty());
 
-    assertThatExceptionOfType(ShopNotFoundException.class).isThrownBy(() -> shopService.findById(1L));
+    assertThatExceptionOfType(ShopNotFoundException.class).isThrownBy(() -> shopService.retrieveShopById(1L));
   }
 
   @Test
   public void findShopByIdWithNullIdTest() {
     when(shopRepository.findById(any())).thenReturn(Optional.empty());
 
-    assertThatExceptionOfType(ShopNotFoundException.class).isThrownBy(() -> shopService.findById(null));
+    assertThatExceptionOfType(ShopNotFoundException.class).isThrownBy(() -> shopService.retrieveShopById(null));
   }
 
   @Test
   public void saveUserNotFoundExceptionTest() {
-    when(userService.getUserByCpf(anyString(), anyString())).thenReturn(null);
+    when(userService.retrieveUserByCpf(anyString(), anyString())).thenReturn(null);
 
-    assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> shopService.save(ORDER_INPUT, "0000"));
+    assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> shopService.addShop(ORDER_INPUT, "0000"));
   }
 
   @Test
   public void saveIllegalProductExceptionWithProductServiceTest() {
-    when(userService.getUserByCpf(anyString(), anyString())).thenReturn(user);
-    when(productService.getProductByIdentifier(anyString())).thenReturn(null);
+    when(userService.retrieveUserByCpf(anyString(), anyString())).thenReturn(user);
+    when(productService.retrieveProductByIdentifier(anyString())).thenReturn(null);
 
-    assertThatExceptionOfType(IllegalProductException.class).isThrownBy(() -> shopService.save(ORDER_INPUT, "0000"));
+    assertThatExceptionOfType(IllegalProductException.class).isThrownBy(() -> shopService.addShop(ORDER_INPUT, "0000"));
   }
 
   @Test
   public void saveSuccessTest() {
-    when(userService.getUserByCpf(anyString(), anyString())).thenReturn(user);
+    when(userService.retrieveUserByCpf(anyString(), anyString())).thenReturn(user);
     when(shopRepository.save(any())).thenReturn(ORDER_2);
-    when(productService.getProductByIdentifier(anyString())).thenReturn(product);
+    when(productService.retrieveProductByIdentifier(anyString())).thenReturn(product);
 
-    ShopOutputDto result = shopService.save(ORDER_INPUT, "0000");
+    ShopOutputDto result = shopService.addShop(ORDER_INPUT, "0000");
 
     assertThat(result).isEqualTo(ORDER_2_DTO);
 
@@ -193,29 +193,29 @@ public class ShopServiceImplTest {
 
   @Test
   public void saveWithUserIdenfierNull() {
-    when(userService.getUserByCpf(any(), anyString())).thenReturn(null);
+    when(userService.retrieveUserByCpf(any(), anyString())).thenReturn(null);
 
     ORDER_INPUT = new ShopInputDto(null, List.of(new ItemInputDto("XYZ001", 2)));
 
-    assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> shopService.save(ORDER_INPUT, "0000"));
+    assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> shopService.addShop(ORDER_INPUT, "0000"));
   }
 
   @Test
   public void saveWithListItemsNull() {
-    when(userService.getUserByCpf(anyString(), anyString())).thenReturn(user);
+    when(userService.retrieveUserByCpf(anyString(), anyString())).thenReturn(user);
    
     ORDER_INPUT = new ShopInputDto("DEF456", null);
 
-    assertThatExceptionOfType(IllegalProductException.class).isThrownBy(() -> shopService.save(ORDER_INPUT, "0000"));
+    assertThatExceptionOfType(IllegalProductException.class).isThrownBy(() -> shopService.addShop(ORDER_INPUT, "0000"));
 
   }
   @Test
   public void saveWithListItemsEmpty() {
-    when(userService.getUserByCpf(anyString(), anyString())).thenReturn(user);
+    when(userService.retrieveUserByCpf(anyString(), anyString())).thenReturn(user);
    
     ORDER_INPUT = new ShopInputDto("DEF456", List.of());
 
-    assertThatExceptionOfType(IllegalProductException.class).isThrownBy(() -> shopService.save(ORDER_INPUT, "0000"));
+    assertThatExceptionOfType(IllegalProductException.class).isThrownBy(() -> shopService.addShop(ORDER_INPUT, "0000"));
 
   }
 }

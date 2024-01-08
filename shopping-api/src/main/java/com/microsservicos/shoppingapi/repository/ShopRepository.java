@@ -1,6 +1,6 @@
 package com.microsservicos.shoppingapi.repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +15,5 @@ public interface ShopRepository extends JpaRepository<Shop, Long>, ReportReposit
 
   List<Shop> findAllByTotalGreaterThan(Float total);
 
-  List<Shop> findAllByDateAfter(LocalDate date);
+  List<Shop> findAllByDateAfter(LocalDateTime date);
 }

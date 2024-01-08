@@ -24,7 +24,7 @@ spec:
         app: shopping-api
     spec:
       containers:
-      - image: silviocavalcanti/shopping-api:1.0.0
+      - image: silviocavalcanti/shopping-api:1.1.0
         name: shopping-api
         #resource of pod
         resources:
@@ -50,15 +50,14 @@ spec:
               key: POSTGRES_URL
         - name: USER_API_URL
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: endpoint-secret
               key: USER_API_URL
         - name: PRODUCT_API_URL
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: endpoint-secret
               key: PRODUCT_API_URL
-              
         # ports
         ports:
         - containerPort: 8082

@@ -31,8 +31,8 @@ import com.microsservicos.dto.ShopOutputDto;
     "spring.datasource.username = sa",
     "spring.datasource.password = password",
     "spring.datasource.hikari.maximumPoolSize=2",
-    "spring.jpa.database-platform = org.hibernate.dialect.H2Dialect",
-    "spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.H2Dialect",
+    "spring.jpa.database-platform = org.hibernate.dialect.PostgreSQLDialect",
+    "spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect",
     "spring.jpa.properties.hibernate.default_schema = shopping",
     "server.port = -1",
     "logging.level.org.flywaydb=DEBUG"
@@ -68,8 +68,8 @@ public class ReportControllerTest {
   @Test
   public void reportSuccessAllResult() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/report")
-        .param("start", "01/01/2000")
-        .param("end", "01/01/2024")
+        .param("start", "2000-01-01")
+        .param("end", "2024-01-01")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -79,8 +79,8 @@ public class ReportControllerTest {
   @Test
   public void reportSuccessSingleOneResult() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/report")
-        .param("start", "01/01/2023")
-        .param("end", "01/01/2024")
+        .param("start", "2023-01-01")
+        .param("end", "2024-01-01")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -90,8 +90,8 @@ public class ReportControllerTest {
   @Test
   public void reportSuccessSingleTwoResult() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/report")
-        .param("start", "01/01/2020")
-        .param("end", "01/01/2021")
+        .param("start", "2020-01-01")
+        .param("end", "2021-01-01")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -102,8 +102,8 @@ public class ReportControllerTest {
   @Test
   public void reportSuccessNoDataReturn() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/report")
-        .param("start", "01/01/2000")
-        .param("end", "01/01/2001")
+        .param("start", "2000-01-01")
+        .param("end", "2001-01-01")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -121,7 +121,7 @@ public class ReportControllerTest {
   @Test
   public void reportNoStartArg() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/report")
-        .param("start", "01/01/2000")
+        .param("start", "2000-01-01")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
@@ -130,7 +130,7 @@ public class ReportControllerTest {
   @Test
   public void reportNoEndArg() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/report")
-        .param("end", "01/01/2001")
+        .param("end", "2001-01-01")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
@@ -139,7 +139,7 @@ public class ReportControllerTest {
   @Test
   public void searchSuccessAllResultNoOptionalArgs() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/search")
-        .param("start", "01/01/2000")
+        .param("start", "2000-01-01")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -149,7 +149,7 @@ public class ReportControllerTest {
   @Test
   public void searchSuccessFilterByMin() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/search")
-        .param("start", "01/01/2000")
+        .param("start", "2000-01-01")
         .param("min", "1000")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -160,8 +160,8 @@ public class ReportControllerTest {
   @Test
   public void searchSuccessFilterByEnd() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/search")
-        .param("start", "01/01/2000")
-        .param("end", "01/01/2024")
+        .param("start", "2000-01-01")
+        .param("end", "2024-01-01")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -171,7 +171,7 @@ public class ReportControllerTest {
   @Test
   public void searchSuccessFilterByStart() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/search")
-        .param("start", "01/01/2023")
+        .param("start", "2023-01-01")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -181,8 +181,8 @@ public class ReportControllerTest {
   @Test
   public void searchSuccessAllFilter() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/search")
-        .param("start", "01/01/2000")
-        .param("end", "01/01/2024")
+        .param("start", "2000-01-01")
+        .param("end", "2024-01-01")
         .param("min", "1000")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -210,7 +210,7 @@ public class ReportControllerTest {
   @Test
   public void searchInvalidEndArg() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/search")
-        .param("start", "01/01/2000")
+        .param("start", "2000-01-01")
         .param("end", "test")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -219,8 +219,8 @@ public class ReportControllerTest {
   @Test
   public void searchInvalidMinArg() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/search")
-        .param("start", "01/01/2000")
-        .param("end", "01/01/2024")
+        .param("start", "2000-01-01")
+        .param("end", "2024-01-01")
         .param("min", "test")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())

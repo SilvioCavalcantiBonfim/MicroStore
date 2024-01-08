@@ -7,9 +7,9 @@ import com.microsservicos.dto.ShopOutputDto;
 import com.microsservicos.dto.ShopInputDto;
 
 public interface ShopService {
-  List<ShopOutputDto> getAll();
-  ShopOutputDto findById(Long id);
-  ShopOutputDto save(ShopInputDto shopDto, String key);
-  List<ShopOutputDto> getByUser(String userIdentifier, String key);
-  List<ShopOutputDto> getByDate(LocalDate date);
+  List<ShopOutputDto> retrieveAllShops();
+  ShopOutputDto retrieveShopById(Long id);
+  ShopOutputDto addShop(ShopInputDto shopDto, String key);
+  List<ShopOutputDto> retrieveShopsByUser(String userIdentifier, String key);
+  List<ShopOutputDto> retrieveShopsByDate(LocalDate date);
 }

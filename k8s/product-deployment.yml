@@ -24,7 +24,7 @@ spec:
         app: product-api
     spec:
       containers:
-      - image: silviocavalcanti/product-api:1.0.0
+      - image: silviocavalcanti/product-api:1.1.0
         name: product-api
         #resource of pod
         resources:

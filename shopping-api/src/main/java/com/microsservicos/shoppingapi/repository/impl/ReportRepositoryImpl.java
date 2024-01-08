@@ -19,10 +19,10 @@ public class ReportRepositoryImpl implements ReportRepository {
   private EntityManager entityManager;
 
   @Override
-  public List<Shop> getShopByFilters(LocalDate start, LocalDate end, Float min) {
+  public List<Shop> retrieveShopsByDateAndTotal(LocalDate start, LocalDate end, Float min) {
     validateStartDate(start);
-    StringBuilder str = createStringQuery(end, min);
-    Query query = createQueryWithParameters(start, end, min, str);
+    StringBuilder str = buildQueryForShops(end, min);
+    Query query = createQueryWithDateAndTotalParameters(start, end, min, str);
     List<?> result = query.getResultList();
     return result.stream().map(Shop.class::cast).toList();
   }
@@ -33,32 +33,32 @@ public class ReportRepositoryImpl implements ReportRepository {
     }
   }
 
-  private Query createQueryWithParameters(LocalDate start, LocalDate end, Float min, StringBuilder str) {
+  private Query createQueryWithDateAndTotalParameters(LocalDate start, LocalDate end, Float min, StringBuilder str) {
     Query query = entityManager.createQuery(str.toString());
     query.setParameter("start", start);
-    if (end != null) {
+    if (Objects.nonNull(end)) {
       query.setParameter("end", end);
     }
-    if (min != null) {
+    if (Objects.nonNull(min)) {
       query.setParameter("min", min);
     }
     return query;
   }
 
-  private StringBuilder createStringQuery(LocalDate end, Float min) {
+  private StringBuilder buildQueryForShops(LocalDate end, Float min) {
     StringBuilder str = new StringBuilder();
     str.append("SELECT s FROM shop s WHERE s.date >= CAST(:start AS DATE)");
-    if (end != null) {
+    if (Objects.nonNull(end)) {
       str.append(" and s.date <= CAST(:end AS DATE)");
     }
-    if (min != null) {
+    if (Objects.nonNull(min)) {
       str.append(" and s.total >= :min");
     }
     return str;
   }
 
   @Override
-  public ReportDto getReportByDate(LocalDate start, LocalDate end) {
+  public ReportDto generateReportByDate(LocalDate start, LocalDate end) {
     validateStartDate(start);
     StringBuilder strQuery = new StringBuilder();
     strQuery.append(
@@ -68,16 +68,17 @@ public class ReportRepositoryImpl implements ReportRepository {
     query.setParameter("end", end);
 
     Object[] result = (Object[]) query.getSingleResult();
-    
-    return new ReportDto((Long) result[0], getValue(result[1]), getValue(result[2]));
+
+    return new ReportDto((Long) result[0], convertToDouble(result[1]), convertToDouble(result[2]));
   }
 
-  private double getValue(Object result) {
-    double total = 0.0;
-    if (Objects.nonNull(result)) {
-      total = ((BigDecimal) result).doubleValue();
+  private double convertToDouble(Object result) {
+    try {
+      BigDecimal convert = (BigDecimal) result;
+      return convert.doubleValue();
+    } catch (RuntimeException e) {
+      return 0.0;
     }
-    return total;
   }
 
 }

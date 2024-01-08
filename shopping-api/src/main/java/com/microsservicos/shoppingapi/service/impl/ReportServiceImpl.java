@@ -22,9 +22,9 @@ public class ReportServiceImpl implements ReportService {
   }
   
   @Override
-  public List<ShopOutputDto> getShopByFilters(LocalDate start, LocalDate end, Float min) {
+  public List<ShopOutputDto> retrieveShopsByDateAndMinimumTotal(LocalDate start, LocalDate end, Float min) {
     validateStartDate(start);
-    return shopRepository.getShopByFilters(start, end, min).stream().map(Mapper::shopToShopDto).toList();
+    return shopRepository.retrieveShopsByDateAndTotal(start, end, min).stream().map(Mapper::convertShopToDto).toList();
   }
 
   private void validateStartDate(LocalDate start) {
@@ -34,9 +34,9 @@ public class ReportServiceImpl implements ReportService {
   }
   
   @Override
-  public ReportDto getReportByDate(LocalDate start, LocalDate end) {
+  public ReportDto generateReportByDateRange(LocalDate start, LocalDate end) {
     validateStartDate(start);
-    return shopRepository.getReportByDate(start, end);
+    return shopRepository.generateReportByDate(start, end);
   }
   
 }

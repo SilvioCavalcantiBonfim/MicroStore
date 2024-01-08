@@ -11,8 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,6 +29,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,8 +75,24 @@ public class ShopControllerTest {
   @Autowired
   private EntityManager entityManager;
 
+  @Mock
+  @SuppressWarnings("rawtypes")
+  private RestClient.RequestHeadersUriSpec requestHeadersUriSpec;
+
+  @Mock
+  @SuppressWarnings("rawtypes")
+  private RestClient.RequestHeadersSpec requestHeadersSpec;
+
+  @Mock
+  private RestClient.ResponseSpec responseSpec;
+
   @MockBean
-  private RestTemplate restTemplate;
+  @Qualifier("userClient")
+  private RestClient userClient;
+
+  @MockBean
+  @Qualifier("productClient")
+  private RestClient productClient;
 
   private static ItemDto ITEM1;
   private static ItemDto ITEM2;
@@ -82,14 +104,26 @@ public class ShopControllerTest {
 
   private static ItemInputDto itemBody = new ItemInputDto("video-game", 2);
   private static ShopInputDto body = new ShopInputDto(user.cpf(), List.of(itemBody));
-    
+
   @BeforeAll
   private static void setup() throws ParseException {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     ITEM1 = new ItemDto("video-game", 2001.0f, 1);
     ITEM2 = new ItemDto("video-game", 20.0f, 2);
-    SHOP1 = new ShopOutputDto("12345678910", 2001.0, LocalDateTime.parse("2023-12-31 01:51:36.789", formatter), List.of(ITEM1));
-    SHOP2 = new ShopOutputDto("12345678910", 20.0, LocalDateTime.parse("2020-12-31 01:51:36.789", formatter), List.of(ITEM2));
+    SHOP1 = new ShopOutputDto("12345678910", 2001.0, LocalDateTime.parse("2023-12-31 01:51:36.789", formatter),
+        List.of(ITEM1));
+    SHOP2 = new ShopOutputDto("12345678910", 20.0, LocalDateTime.parse("2020-12-31 01:51:36.789", formatter),
+        List.of(ITEM2));
+  }
+
+  @BeforeEach
+  private void setupEach() {
+    Mockito.when(userClient.get()).thenReturn(requestHeadersUriSpec);
+    Mockito.when(productClient.get()).thenReturn(requestHeadersUriSpec);
+    Mockito.when(requestHeadersUriSpec.uri(Mockito.anyString())).thenReturn(requestHeadersSpec);
+    Mockito.when(requestHeadersSpec.header(Mockito.any(),Mockito.any())).thenReturn(requestHeadersSpec);
+    Mockito.when(requestHeadersSpec.accept(Mockito.any())).thenReturn(requestHeadersSpec);
+    Mockito.when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
   }
 
   @Test
@@ -130,7 +164,7 @@ public class ShopControllerTest {
   @Test
   public void getByUserSuccess() throws Exception {
 
-    when(restTemplate.getForEntity(anyString(), any())).thenReturn(ResponseEntity.ok(user));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenReturn(user);
 
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/shopByUser/12345678910")
         .header("key", KEY)
@@ -143,8 +177,8 @@ public class ShopControllerTest {
   @Test
   public void getByUserInvalidKey() throws Exception {
 
-    when(restTemplate.getForEntity(anyString(), any()))
-        .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "not found", null, null, null));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenThrow(new RestClientResponseException(
+        "not found", HttpStatus.NOT_FOUND, null, null, null, null));
 
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/shopByUser/12345678910")
         .header("key", KEY)
@@ -156,8 +190,8 @@ public class ShopControllerTest {
   @Test
   public void getByUserNotFoundUserIdentifier() throws Exception {
 
-    when(restTemplate.getForEntity(anyString(), any()))
-        .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "not found", null, null, null));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenThrow(new RestClientResponseException(
+        "not found", HttpStatus.NOT_FOUND, null, null, null, null));
 
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/shopByUser/12345678911")
         .header("key", KEY)
@@ -169,8 +203,8 @@ public class ShopControllerTest {
   @Test
   public void getByUserWithUserIdentifierLengthInvalid() throws Exception {
 
-    when(restTemplate.getForEntity(anyString(), any())).thenThrow(
-        HttpClientErrorException.create(HttpStatus.UNPROCESSABLE_ENTITY, "unprocessable entity", null, null, null));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenThrow(new RestClientResponseException(
+        "unprocessable entity", HttpStatus.UNPROCESSABLE_ENTITY, null, null, null, null));
 
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/shopByUser/1234567891")
         .header("key", KEY)
@@ -199,7 +233,7 @@ public class ShopControllerTest {
   @Test
   public void shopByDateSuccess() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/shopByDate")
-        .param("after", "31-12-2023")
+        .param("after", "2023-12-31")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -209,7 +243,7 @@ public class ShopControllerTest {
   @Test
   public void shopByDateSuccessAllData() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/shopByDate")
-        .param("after", "31-12-2020")
+        .param("after", "2020-12-31")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -220,7 +254,7 @@ public class ShopControllerTest {
   @Test
   public void shopByDateSuccessNonData() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/shopping/shopByDate")
-        .param("after", "2024-01-02T00:00:00")
+        .param("after", "2024-01-03")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -238,8 +272,8 @@ public class ShopControllerTest {
   @Test
   public void createShopUserNotFound() throws Exception {
 
-    when(restTemplate.getForEntity(anyString(), any()))
-        .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "not found", null, null, null));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenThrow(new RestClientResponseException(
+        "not found", HttpStatus.NOT_FOUND, null, null, null, null));
 
     mockMvc.perform(MockMvcRequestBuilders.post("/shopping")
         .content(objectMapper.writeValueAsString(body))
@@ -252,8 +286,8 @@ public class ShopControllerTest {
   @Test
   public void createShopUserInvalidUserIdentifier() throws Exception {
 
-    when(restTemplate.getForEntity(anyString(), any())).thenThrow(
-        HttpClientErrorException.create(HttpStatus.UNPROCESSABLE_ENTITY, "unprocessable entity", null, null, null));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenThrow(new RestClientResponseException(
+        "unprocessable entity", HttpStatus.UNPROCESSABLE_ENTITY, null, null, null, null));
 
     mockMvc.perform(MockMvcRequestBuilders.post("/shopping")
         .content(objectMapper.writeValueAsString(body))
@@ -270,13 +304,9 @@ public class ShopControllerTest {
     ItemInputDto itemBody = new ItemInputDto("video-game", 2);
     ShopInputDto body = new ShopInputDto(user.cpf(), List.of(itemBody));
 
-    when(restTemplate
-        .getForEntity(eq("http://localhost:8080/user/cpf/12345678910?key=139cdb41-5fab-4283-8d07-a8b42960af48"), any()))
-        .thenReturn(ResponseEntity.ok(user));
-    when(restTemplate.getForEntity(eq(String.format("http://localhost:8081/product/%s", itemBody.productIdentifier())),
-        any()))
-        .thenReturn(ResponseEntity.ok(new ProductDto(itemBody.productIdentifier(), "Test Product", "Description",
-            2000.0f, new CategoryDto(1L, "test"))));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenReturn(user);
+    Mockito.when(responseSpec.body(ProductDto.class)).thenReturn(new ProductDto(itemBody.productIdentifier(), "Test Product", "Description",
+            2000.0f, new CategoryDto(1L, "test")));
 
     mockMvc.perform(MockMvcRequestBuilders.post("/shopping")
         .content(objectMapper.writeValueAsString(body))
@@ -294,9 +324,7 @@ public class ShopControllerTest {
 
     ShopOutputDto body = new ShopOutputDto(user.cpf(), 100.0, LocalDateTime.now(), List.of());
 
-    when(restTemplate
-        .getForEntity(eq("http://localhost:8080/user/cpf/12345678910?key=139cdb41-5fab-4283-8d07-a8b42960af48"), any()))
-        .thenReturn(ResponseEntity.ok(user));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenReturn(user);
 
     mockMvc.perform(MockMvcRequestBuilders.post("/shopping")
         .content(objectMapper.writeValueAsString(body))
@@ -353,9 +381,7 @@ public class ShopControllerTest {
 
     ShopOutputDto body = new ShopOutputDto(user.cpf(), 100.0, LocalDateTime.now(), null);
 
-    when(restTemplate
-        .getForEntity(eq("http://localhost:8080/user/cpf/12345678910?key=139cdb41-5fab-4283-8d07-a8b42960af48"), any()))
-        .thenReturn(ResponseEntity.ok(user));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenReturn(user);
 
     mockMvc.perform(MockMvcRequestBuilders.post("/shopping")
         .content(objectMapper.writeValueAsString(body))

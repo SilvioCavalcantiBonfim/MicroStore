@@ -2,23 +2,18 @@ package com.microsservicos.shoppingapi.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 import com.microsservicos.dto.UserOutputDto;
 import com.microsservicos.exception.InvalidCpfLengthException;
 import com.microsservicos.exception.UserNotFoundException;
@@ -26,52 +21,69 @@ import com.microsservicos.shoppingapi.service.impl.UserSerivceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UserSerivceImplTest {
+  
+  @Mock
+  private RestClient userClient;
 
   @Mock
-  private RestTemplate restTemplate;
+  @SuppressWarnings("rawtypes")
+  private RestClient.RequestHeadersUriSpec requestHeadersUriSpec;
 
-  private String url = "http://localhost:8081/";
+  @Mock
+  @SuppressWarnings("rawtypes")
+  private RestClient.RequestHeadersSpec requestHeadersSpec;
 
+  @Mock
+  private RestClient.ResponseSpec responseSpec;
+
+  @InjectMocks
   private UserSerivceImpl userSerivce;
 
   @BeforeEach
   private void setup() {
-    userSerivce = new UserSerivceImpl(url, restTemplate);
+    Mockito.when(userClient.get()).thenReturn(requestHeadersUriSpec);
+    Mockito.when(requestHeadersUriSpec.uri(Mockito.anyString())).thenReturn(requestHeadersSpec);
+    Mockito.when(requestHeadersSpec.header(Mockito.any(),Mockito.any())).thenReturn(requestHeadersSpec);
+    Mockito.when(requestHeadersSpec.accept(Mockito.any())).thenReturn(requestHeadersSpec);
+    Mockito.when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
   }
 
   @Test
   public void getUserByCpfExceptionNotFound() {
-    when(restTemplate.getForEntity(anyString(), any()))
-        .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "not found", null, null, null));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenThrow(new RestClientResponseException(
+        "not found", HttpStatus.NOT_FOUND, null, null, null, null));
 
-    assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> userSerivce.getUserByCpf("12345678900", "test"));
+    assertThatExceptionOfType(UserNotFoundException.class)
+        .isThrownBy(() -> userSerivce.retrieveUserByCpf("12345678900", "test"));
   }
 
   @Test
   public void getUserByCpfExceptionInvalidCpfLength() {
-    when(restTemplate.getForEntity(anyString(), any())).thenThrow(
-        HttpClientErrorException.create(HttpStatus.UNPROCESSABLE_ENTITY, "unprocessable entity", null, null, null));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenThrow(new RestClientResponseException(
+        "unprocessable entity", HttpStatus.UNPROCESSABLE_ENTITY, null, null, null, null));
 
     assertThatExceptionOfType(InvalidCpfLengthException.class)
-        .isThrownBy(() -> userSerivce.getUserByCpf("1234567890", "test"));
+        .isThrownBy(() -> userSerivce.retrieveUserByCpf("1234567890", "test"));
   }
 
   @Test
   public void getUserByCpfExceptionOtherError() {
-    when(restTemplate.getForEntity(anyString(), any())).thenThrow(new RestClientException(""));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenThrow(new RestClientResponseException(
+        "Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR, null, null, null, null));
 
     assertThatExceptionOfType(RuntimeException.class)
-        .isThrownBy(() -> userSerivce.getUserByCpf("12345678900", "test"));
+        .isThrownBy(() -> userSerivce.retrieveUserByCpf("12345678900", "test"));
   }
 
   @Test
   public void getUserByCpfSuccess() {
 
-    UserOutputDto expected = new UserOutputDto("user test", "12345678900", "street B", "test@email.com", "900000000", LocalDateTime.now(), "test");
+    UserOutputDto expected = new UserOutputDto("user test", "12345678900", "street B", "test@email.com", "900000000",
+        LocalDateTime.now(), "test");
 
-    when(restTemplate.getForEntity(anyString(), any())).thenReturn(ResponseEntity.ok(expected));
+    Mockito.when(responseSpec.body(UserOutputDto.class)).thenReturn(expected);
 
-    UserOutputDto result = userSerivce.getUserByCpf("12345678900", "test");
+    UserOutputDto result = userSerivce.retrieveUserByCpf("12345678900", "test");
 
     assertThat(result).isEqualTo(expected);
   }

@@ -27,7 +27,7 @@ public class UserToUserDtoConverterTest {
     user.setRegister(cadastro);
     user.setKey("123");
   
-    UserOutputDto result = Mapper.UserToUserOutputDto(user);
+    UserOutputDto result = Mapper.convertUserToDto(user);
     
     Assertions.assertThat(expected).isEqualTo(result);
   }
@@ -44,7 +44,7 @@ public class UserToUserDtoConverterTest {
     expected.setEmail("marcela@email.com");
     expected.setPhone("1234-3454");
   
-    User result = Mapper.UserInputDtoToUser(user);
+    User result = Mapper.convertDtoToUser(user);
     
     Assertions.assertThat(expected).usingRecursiveComparison().isEqualTo(result);
   }

@@ -94,7 +94,8 @@ public class UserApiIntegrationTest {
   @DisplayName("Get user by CPF successfully")
   public void testGetUserByCpfSuccessEndpoint() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders
-        .get("/user/cpf/12345678901?key=139cdb41-5fab-4283-8d07-a8b42960af48")
+        .get("/user/cpf/12345678901")
+        .header("key", "139cdb41-5fab-4283-8d07-a8b42960af48")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -115,7 +116,8 @@ public class UserApiIntegrationTest {
   @DisplayName("Get user by CPF - Invalid CPF length")
   public void testGetUserByCpfInvalidLengthCpfEndpoint() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders
-        .get("/user/cpf/1234567890?key=139cdb41-5fab-4283-8d07-a8b42960af48")
+        .get("/user/cpf/1234567890")
+        .header("key", "139cdb41-5fab-4283-8d07-a8b42960af48")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
@@ -125,7 +127,8 @@ public class UserApiIntegrationTest {
   @DisplayName("Get user by CPF - Invalid CPF and valid key")
   public void testGetUserByCpfInvalidCpfAndValidKeyEndpoint() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders
-        .get("/user/cpf/12345678900?key=139cdb41-5fab-4283-8d07-a8b42960af48")
+        .get("/user/cpf/12345678900")
+        .header("key", "139cdb41-5fab-4283-8d07-a8b42960af48")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isNotFound())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
@@ -135,7 +138,8 @@ public class UserApiIntegrationTest {
   @DisplayName("Get user by CPF - Valid CPF and invalid key")
   public void testGetUserByCpfValidCpfAndInvalidKeyEndpoint() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders
-        .get("/user/cpf/12345678901?key=239cdb41-5fab-4283-8d07-a8b42960af48")
+        .get("/user/cpf/12345678901")
+        .header("key", "239cdb41-5fab-4283-8d07-a8b42960af48")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isNotFound())
         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));

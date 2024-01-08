@@ -1,12 +1,11 @@
 package com.microsservicos.shoppingapi.service.impl;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 import com.microsservicos.dto.ProductDto;
 import com.microsservicos.exception.ProductNotFoundException;
 import com.microsservicos.shoppingapi.service.ProductService;
@@ -14,35 +13,27 @@ import com.microsservicos.shoppingapi.service.ProductService;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-  private final String productUrl;
-  private final RestTemplate restTemplate;
+  private final RestClient productClient;
 
-  public ProductServiceImpl(
-      @Value("${PRODUCT_API_URL:http://localhost:8081/product}") String productUrl,
-      RestTemplate restTemplate) {
-    this.productUrl = productUrl;
-    this.restTemplate = restTemplate;
+  public ProductServiceImpl(@Qualifier("productClient") RestClient productClient) {
+    this.productClient = productClient;
   }
 
   @Override
-  public ProductDto getProductByIdentifier(String productIdentifier) {
+  public ProductDto retrieveProductByIdentifier(String productIdentifier) {
     try {
-      return fetchProductResponse(productIdentifier);
-    } catch (HttpClientErrorException.NotFound e) {
-      throw new ProductNotFoundException();
-    } catch (RestClientException e){
+      return fetchProductDetails(productIdentifier);
+    } catch (RestClientResponseException e){
+      if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+        throw new ProductNotFoundException();
+      }
       throw new RuntimeException();
     }
   }
 
-  private ProductDto fetchProductResponse(String productIdentifier) {
-    String url = buildProductUrl(productIdentifier);
-    ResponseEntity<ProductDto> response = restTemplate.getForEntity(url, ProductDto.class);
-    return response.getBody();
-  }
-
-  private String buildProductUrl(String productIdentifier) {
-    return String.format("%s/%s", productUrl, productIdentifier);
+  private ProductDto fetchProductDetails(String productIdentifier) {
+    return productClient.get().uri(String.format("/product/%s", productIdentifier)).accept(MediaType.APPLICATION_JSON)
+        .retrieve().body(ProductDto.class);
   }
 
 }

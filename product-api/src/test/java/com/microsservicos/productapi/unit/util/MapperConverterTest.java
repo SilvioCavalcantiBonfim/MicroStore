@@ -14,7 +14,7 @@ public class MapperConverterTest {
   @Test
   public void categoryToCategoryNull() {
 
-    CategoryDto expected = Mapper.categoryToCategoryDto(null);
+    CategoryDto expected = Mapper.convertCategoryToDto(null);
 
     Assertions.assertThat(expected).isNull();
   }
@@ -29,7 +29,7 @@ public class MapperConverterTest {
 
     CategoryDto expected = new CategoryDto(1L, "test");
 
-    CategoryDto result = Mapper.categoryToCategoryDto(category);
+    CategoryDto result = Mapper.convertCategoryToDto(category);
 
     Assertions.assertThat(result).isEqualTo(expected);
   }
@@ -37,7 +37,7 @@ public class MapperConverterTest {
   @Test
   public void productToProductDtoNull() {
 
-    ProductDto expected = Mapper.productToProductDto(null);
+    ProductDto expected = Mapper.convertProductToDto(null);
 
     Assertions.assertThat(expected).isNull();
   }
@@ -61,7 +61,7 @@ public class MapperConverterTest {
 
     ProductDto expected = new ProductDto("test", "test", "description", 0.0f, new CategoryDto(1L, "category"));
 
-    ProductDto result = Mapper.productToProductDto(product);
+    ProductDto result = Mapper.convertProductToDto(product);
 
     Assertions.assertThat(result).isEqualTo(expected);
   }
@@ -69,7 +69,7 @@ public class MapperConverterTest {
   @Test
   public void productDtoToProductNull() {
 
-    Product expected = Mapper.productDtoToProduct(null);
+    Product expected = Mapper.convertDtoToProduct(null);
 
     Assertions.assertThat(expected).isNull();
   }
@@ -92,7 +92,7 @@ public class MapperConverterTest {
 
     ProductDto product = new ProductDto("test", "test", "description", 0.0f, new CategoryDto(1L, "category"));
 
-    Product result = Mapper.productDtoToProduct(product);
+    Product result = Mapper.convertDtoToProduct(product);
 
     Assertions.assertThat(result).usingRecursiveComparison().isEqualTo(expected);
   }
@@ -109,7 +109,7 @@ public class MapperConverterTest {
 
     ProductDto product = new ProductDto("test", "test", "description", 0.0f, null);
 
-    Product result = Mapper.productDtoToProduct(product);
+    Product result = Mapper.convertDtoToProduct(product);
 
     Assertions.assertThat(result).usingRecursiveComparison().isEqualTo(expected);
   }

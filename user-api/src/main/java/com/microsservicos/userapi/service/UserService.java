@@ -7,15 +7,15 @@ import com.microsservicos.dto.UserOutputDto;
 
 public interface UserService {
   
-  List<UserOutputDto> getAllUsers();
+  List<UserOutputDto> retrieveAllUsers();
 
-  UserOutputDto findUserById(Long id);
+  UserOutputDto retrieveUserById(Long id);
 
-  UserOutputDto createUser(UserInputDto userDto);
+  UserOutputDto registerNewUser(UserInputDto userDto);
 
-  UserOutputDto findUserByCpf(String cpf, String key);
+  UserOutputDto retrieveUserByCpf(String cpf, String key);
 
-  List<UserOutputDto> findUsersByName(String name);
+  List<UserOutputDto> retrieveUsersByName(String name);
 
-  void deleteUser(long id);
+  void removeUser(long id);
 }

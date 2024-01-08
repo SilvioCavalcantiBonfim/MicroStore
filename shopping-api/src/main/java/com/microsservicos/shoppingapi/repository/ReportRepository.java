@@ -7,6 +7,6 @@ import com.microsservicos.dto.ReportDto;
 import com.microsservicos.shoppingapi.model.Shop;
 
 public interface ReportRepository {
-  List<Shop> getShopByFilters(LocalDate start, LocalDate end, Float min);
-  ReportDto getReportByDate(LocalDate start, LocalDate end);
+  List<Shop> retrieveShopsByDateAndTotal(LocalDate start, LocalDate end, Float min);
+  ReportDto generateReportByDate(LocalDate start, LocalDate end);
 }

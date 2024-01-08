@@ -16,7 +16,7 @@ public final class Mapper{
 
   private Mapper(){}
 
-  public static ItemDto itemToItemDto(Item item) {
+  public static ItemDto convertItemToDto(Item item) {
     try {
       return new ItemDto(item.getProductIdentifier(), item.getPrice(), item.getAmount());
     } catch (RuntimeException e) {
@@ -24,7 +24,7 @@ public final class Mapper{
     }
   }
 
-  public static Item itemDtoToItem(@Valid ItemDto itemDto){
+  public static Item convertDtoToItem(@Valid ItemDto itemDto){
     try {
       Item item = new Item();
       item.setProductIdentifier(itemDto.productIdentifier());
@@ -36,11 +36,11 @@ public final class Mapper{
     }
   }
 
-  public static ShopOutputDto shopToShopDto(Shop shop){
+  public static ShopOutputDto convertShopToDto(Shop shop){
     try {
       List<ItemDto> itens = new ArrayList<>();
       if (Objects.nonNull(shop.getItens())) {
-        shop.getItens().stream().map(Mapper::itemToItemDto).forEach(itens::add);
+        shop.getItens().stream().map(Mapper::convertItemToDto).forEach(itens::add);
       }
       return new ShopOutputDto(shop.getUserIdentifier(), shop.getTotal(), shop.getDate(),
           itens);
@@ -49,7 +49,7 @@ public final class Mapper{
     }
   }
   
-  public static Shop shopDtoToShop(@Valid ShopOutputDto shopDto){
+  public static Shop convertDtoToShop(@Valid ShopOutputDto shopDto){
     try {
       Shop shop = new Shop();
       shop.setUserIdentifier(shopDto.userIdentifier());
@@ -59,7 +59,7 @@ public final class Mapper{
       List<Item> itens = new ArrayList<>();
   
       if(Objects.nonNull(shopDto.itens())){
-        shopDto.itens().stream().map(Mapper::itemDtoToItem).forEach(itens::add);
+        shopDto.itens().stream().map(Mapper::convertDtoToItem).forEach(itens::add);
       }
   
       shop.setItens(Collections.unmodifiableList(itens));

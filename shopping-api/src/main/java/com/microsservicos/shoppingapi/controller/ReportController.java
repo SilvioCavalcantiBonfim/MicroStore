@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,27 +28,27 @@ public class ReportController {
 
   @GetMapping("/search")
   @ResponseStatus(HttpStatus.OK)
-  public List<ShopOutputDto> getShopsByFilter(
+  public List<ShopOutputDto> retrieveShopsByFilter(
       @RequestParam(name = "start", required = true) 
-      @DateTimeFormat(pattern = "dd/MM/yyyy") 
+      @DateTimeFormat(iso = ISO.DATE) 
       LocalDate start,
       @RequestParam(name = "end", required = false) 
-      @DateTimeFormat(pattern = "dd/MM/yyyy") 
+      @DateTimeFormat(iso = ISO.DATE) 
       LocalDate end, 
       @RequestParam(name = "min", required = false) 
       Float min) {
-    return reportService.getShopByFilters(start, end, min);
+    return reportService.retrieveShopsByDateAndMinimumTotal(start, end, min);
   }
 
   @GetMapping("/report")
   @ResponseStatus(HttpStatus.OK)
-  public ReportDto getReportByDate(
+  public ReportDto retrieveReportByDate(
       @RequestParam(name = "start", required = true) 
-      @DateTimeFormat(pattern = "dd/MM/yyyy") 
+      @DateTimeFormat(iso = ISO.DATE) 
       LocalDate start,
       @RequestParam(name = "end", required = true) 
-      @DateTimeFormat(pattern = "dd/MM/yyyy") 
+      @DateTimeFormat(iso = ISO.DATE) 
       LocalDate end) {
-    return reportService.getReportByDate(start, end);
+    return reportService.generateReportByDateRange(start, end);
   }
 }

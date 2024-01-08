@@ -62,7 +62,7 @@ public class MapperTest {
 
   @Test
   public void itemToItemDtoNonNull() {
-    ItemDto result = Mapper.itemToItemDto(ITEM);
+    ItemDto result = Mapper.convertItemToDto(ITEM);
 
     assertThat(result).isEqualTo(ITEMDTO);
   }
@@ -72,7 +72,7 @@ public class MapperTest {
 
     ITEM.setProductIdentifier(null);
 
-    ItemDto result = Mapper.itemToItemDto(ITEM);
+    ItemDto result = Mapper.convertItemToDto(ITEM);
 
     ItemDto expected = new ItemDto(null, ITEM.getPrice(), ITEM.getAmount());
 
@@ -83,7 +83,7 @@ public class MapperTest {
   public void itemToItemDtoWithPriceNull() {
 
     ITEM.setPrice(null);
-    ItemDto result = Mapper.itemToItemDto(ITEM);
+    ItemDto result = Mapper.convertItemToDto(ITEM);
 
     ItemDto expected = new ItemDto(ITEM.getProductIdentifier(), null, ITEM.getAmount());
 
@@ -94,7 +94,7 @@ public class MapperTest {
   public void itemToItemDtoWithAmountNull() {
 
     ITEM.setAmount(null);
-    ItemDto result = Mapper.itemToItemDto(ITEM);
+    ItemDto result = Mapper.convertItemToDto(ITEM);
 
     ItemDto expected = new ItemDto(ITEM.getProductIdentifier(), ITEM.getPrice(), null);
 
@@ -106,7 +106,7 @@ public class MapperTest {
 
     ITEM.setProductIdentifier("");
 
-    ItemDto result = Mapper.itemToItemDto(ITEM);
+    ItemDto result = Mapper.convertItemToDto(ITEM);
 
     ItemDto expected = new ItemDto("", ITEM.getPrice(), ITEM.getAmount());
 
@@ -115,14 +115,14 @@ public class MapperTest {
 
   @Test
   public void itemToItemDtoNull() {
-    assertThatThrownBy(() -> Mapper.itemToItemDto(null))
+    assertThatThrownBy(() -> Mapper.convertItemToDto(null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Invalid argument provided.");
   }
 
   @Test
   public void itemDtoToItemNonNull() {
-    Item result = Mapper.itemDtoToItem(ITEMDTO);
+    Item result = Mapper.convertDtoToItem(ITEMDTO);
 
     violation(ITEMDTO).isEmpty();
 
@@ -134,7 +134,7 @@ public class MapperTest {
 
     ItemDto nullDto = new ItemDto(null, ITEM.getPrice(), ITEM.getAmount());
 
-    Item result = Mapper.itemDtoToItem(nullDto);
+    Item result = Mapper.convertDtoToItem(nullDto);
 
     violation(nullDto).isNotEmpty();
 
@@ -146,7 +146,7 @@ public class MapperTest {
 
     ItemDto nullDto = new ItemDto("", ITEM.getPrice(), ITEM.getAmount());
 
-    Item result = Mapper.itemDtoToItem(nullDto);
+    Item result = Mapper.convertDtoToItem(nullDto);
 
     violation(nullDto).isNotEmpty();
 
@@ -158,7 +158,7 @@ public class MapperTest {
 
     ItemDto nullDto = new ItemDto(ITEM.getProductIdentifier(), null, ITEM.getAmount());
 
-    Item result = Mapper.itemDtoToItem(nullDto);
+    Item result = Mapper.convertDtoToItem(nullDto);
 
     violation(nullDto).isNotEmpty();
 
@@ -167,21 +167,21 @@ public class MapperTest {
 
   @Test
   public void itemDtoToItemNull() {
-    assertThatThrownBy(() -> Mapper.itemDtoToItem(null))
+    assertThatThrownBy(() -> Mapper.convertDtoToItem(null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Invalid argument provided.");
   }
 
   @Test
   public void shopToShopDtoNonNull() {
-    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.convertShopToDto(SHOP);
 
     assertThat(result).isEqualTo(SHOPDTO);
   }
 
   @Test
   public void shopToShopDtoNull() {
-    assertThatThrownBy(() -> Mapper.shopToShopDto(null))
+    assertThatThrownBy(() -> Mapper.convertShopToDto(null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Invalid argument provided.");
   }
@@ -191,7 +191,7 @@ public class MapperTest {
 
     SHOP.setUserIdentifier(null);
 
-    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.convertShopToDto(SHOP);
 
     ShopOutputDto expected = new ShopOutputDto(null, SHOP.getTotal(), SHOP.getDate(), List.of(ITEMDTO));
 
@@ -202,7 +202,7 @@ public class MapperTest {
   public void shopToShopDtoTotalNull() {
     SHOP.setTotal(null);
 
-    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.convertShopToDto(SHOP);
 
     ShopOutputDto expected = new ShopOutputDto(SHOP.getUserIdentifier(), null, SHOP.getDate(), List.of(ITEMDTO));
 
@@ -213,7 +213,7 @@ public class MapperTest {
   public void shopToShopDtoDateNull() {
     SHOP.setDate(null);
 
-    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.convertShopToDto(SHOP);
 
     ShopOutputDto expected = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), null, List.of(ITEMDTO));
 
@@ -224,7 +224,7 @@ public class MapperTest {
   public void shopToShopDtoItemsNull() {
     SHOP.setItens(null);
 
-    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.convertShopToDto(SHOP);
 
     ShopOutputDto expected = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of());
 
@@ -234,7 +234,7 @@ public class MapperTest {
   public void shopToShopDtoItemsEmpty() {
     SHOP.setItens(List.of());
 
-    ShopOutputDto result = Mapper.shopToShopDto(SHOP);
+    ShopOutputDto result = Mapper.convertShopToDto(SHOP);
 
     ShopOutputDto expected = new ShopOutputDto(SHOP.getUserIdentifier(), SHOP.getTotal(), SHOP.getDate(), List.of());
 
@@ -245,7 +245,7 @@ public class MapperTest {
 
   @Test
   public void shopDtoToShopNonNull() {
-    Shop result = Mapper.shopDtoToShop(SHOPDTO);
+    Shop result = Mapper.convertDtoToShop(SHOPDTO);
 
     violation(SHOPDTO).isEmpty();
 
@@ -263,7 +263,7 @@ public class MapperTest {
     expected.setTotal(nullDto.total());
     expected.setItens(List.of(ITEM));
 
-    Shop result = Mapper.shopDtoToShop(nullDto);
+    Shop result = Mapper.convertDtoToShop(nullDto);
 
     violation(nullDto).isNotEmpty();
 
@@ -281,7 +281,7 @@ public class MapperTest {
     expected.setTotal(nullDto.total());
     expected.setItens(List.of(ITEM));
 
-    Shop result = Mapper.shopDtoToShop(nullDto);
+    Shop result = Mapper.convertDtoToShop(nullDto);
 
     violation(nullDto).isNotEmpty();
 
@@ -299,7 +299,7 @@ public class MapperTest {
     expected.setTotal(nullDto.total());
     expected.setItens(List.of(ITEM));
 
-    Shop result = Mapper.shopDtoToShop(nullDto);
+    Shop result = Mapper.convertDtoToShop(nullDto);
 
     violation(nullDto).isNotEmpty();
 
@@ -317,7 +317,7 @@ public class MapperTest {
     expected.setTotal(nullDto.total());
     expected.setItens(List.of(ITEM));
 
-    Shop result = Mapper.shopDtoToShop(nullDto);
+    Shop result = Mapper.convertDtoToShop(nullDto);
 
     violation(nullDto).isNotEmpty();
 
@@ -335,7 +335,7 @@ public class MapperTest {
     expected.setTotal(nullDto.total());
     expected.setItens(List.of());
 
-    Shop result = Mapper.shopDtoToShop(nullDto);
+    Shop result = Mapper.convertDtoToShop(nullDto);
 
     violation(nullDto).isEmpty();
 
@@ -353,7 +353,7 @@ public class MapperTest {
     expected.setTotal(nullDto.total());
     expected.setItens(List.of());
 
-    Shop result = Mapper.shopDtoToShop(nullDto);
+    Shop result = Mapper.convertDtoToShop(nullDto);
 
     violation(nullDto).isEmpty();
 
@@ -362,7 +362,7 @@ public class MapperTest {
 
   @Test
   public void shopDtoToShopNull() {
-    assertThatThrownBy(() -> Mapper.shopDtoToShop(null))
+    assertThatThrownBy(() -> Mapper.convertDtoToShop(null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Invalid argument provided.");
   }

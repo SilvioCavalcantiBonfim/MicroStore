@@ -2,21 +2,16 @@ package com.microsservicos.shoppingapi.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 import com.microsservicos.dto.CategoryDto;
 import com.microsservicos.dto.ProductDto;
 import com.microsservicos.exception.ProductNotFoundException;
@@ -24,33 +19,47 @@ import com.microsservicos.shoppingapi.service.impl.ProductServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductSerivceImplTest {
-
+  
   @Mock
-  private RestTemplate restTemplate;
-
-  private String url = "http://localhost:8081/";
-
+  private RestClient productClient;
+  
+  @Mock
+  @SuppressWarnings("rawtypes")
+  private RestClient.RequestHeadersUriSpec requestHeadersUriSpec;
+  
+  @Mock
+  @SuppressWarnings("rawtypes")
+  private RestClient.RequestHeadersSpec requestHeadersSpec;
+  
+  @Mock
+  private RestClient.ResponseSpec responseSpec;
+  
+  @InjectMocks
   private ProductServiceImpl productService;
 
   @BeforeEach
   private void setup() {
-    productService = new ProductServiceImpl(url, restTemplate);
+    Mockito.when(productClient.get()).thenReturn(requestHeadersUriSpec);
+    Mockito.when(requestHeadersUriSpec.uri(Mockito.anyString())).thenReturn(requestHeadersSpec);
+    Mockito.when(requestHeadersSpec.accept(Mockito.any())).thenReturn(requestHeadersSpec);
+    Mockito.when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
   }
 
   @Test
   public void getProductByIdentifierExceptionNotFound() {
-    when(restTemplate.getForEntity(anyString(), any()))
-        .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "not found", null, null, null));
+    Mockito.when(responseSpec.body(ProductDto.class)).thenThrow(new RestClientResponseException(
+        "not found", HttpStatus.NOT_FOUND, null, null, null, null));
 
-    assertThatExceptionOfType(ProductNotFoundException.class).isThrownBy(() -> productService.getProductByIdentifier("ABC123"));
+    assertThatExceptionOfType(ProductNotFoundException.class).isThrownBy(() -> productService.retrieveProductByIdentifier("ABC123"));
   }
 
   @Test
   public void getProductByIdentifierExceptionOtherError() {
-    when(restTemplate.getForEntity(anyString(), any())).thenThrow(new RestClientException(""));
+    Mockito.when(responseSpec.body(ProductDto.class)).thenThrow(new RestClientResponseException(
+      "Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR, null, null, null, null));
 
     assertThatExceptionOfType(RuntimeException.class)
-        .isThrownBy(() -> productService.getProductByIdentifier("ABC123"));
+        .isThrownBy(() -> productService.retrieveProductByIdentifier("ABC123"));
   }
 
   @Test
@@ -58,9 +67,9 @@ public class ProductSerivceImplTest {
 
     ProductDto expected = new ProductDto("ABC123", "product test", "description", 5.5f, new CategoryDto(1L, "test"));
 
-    when(restTemplate.getForEntity(anyString(), any())).thenReturn(ResponseEntity.ok(expected));
+    Mockito.when(responseSpec.body(ProductDto.class)).thenReturn(expected);
 
-    ProductDto result = productService.getProductByIdentifier("ABC123");
+    ProductDto result = productService.retrieveProductByIdentifier("ABC123");
 
     assertThat(result).isEqualTo(expected);
   }

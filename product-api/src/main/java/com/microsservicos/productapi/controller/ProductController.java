@@ -29,32 +29,32 @@ public class ProductController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<ProductDto> getAllProducts(){
-    return productService.getAllProducts();
+  public List<ProductDto> retrieveAllProducts(){
+    return productService.retrieveAllProducts();
   }
 
   @GetMapping("category/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public List<ProductDto> findProductsByCategoryId(@PathVariable(name = "id") Long id){
-    return productService.findProductsByCategoryId(id);
+  public List<ProductDto> retrieveProductsByCategoryId(@PathVariable(name = "id") Long id){
+    return productService.retrieveProductsByCategory(id);
   }
 
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ProductDto findByProductIdentifier(@PathVariable(name = "id") String id){
-    return productService.findByProductIdentifier(id);
+  public ProductDto retrieveProductByIdentifier(@PathVariable(name = "id") String id){
+    return productService.retrieveProductByIdentifier(id);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ProductDto createProduct(@Valid @RequestBody ProductDto productDto){
-    return productService.createProduct(productDto);
+  public ProductDto addNewProduct(@Valid @RequestBody ProductDto productDto){
+    return productService.addProduct(productDto);
   }
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteProductById(@PathVariable(name = "id") String id){
-    productService.deleteProduct(id);
+  public void removeProductById(@PathVariable(name = "id") String id){
+    productService.removeProductByIdentifier(id);
   }
 
 }

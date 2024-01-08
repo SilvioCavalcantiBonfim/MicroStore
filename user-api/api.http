@@ -12,7 +12,7 @@ Content-Type: application/json
 
 {
   "name": "teste",
-  "cpf": "1234567891",
+  "cpf": "12345678910",
   "address": "Rua abc",
   "email": "teste@email.com",
   "phone":"900000000"
@@ -35,7 +35,7 @@ Content-Type: application/json
 GET http://localhost:8080/user/100 HTTP/1.1
 
 ###
-GET http://localhost:8080/user/search?name=marce% HTTP/1.1
+GET http://localhost:8080/user/search?name=te% HTTP/1.1
 
 ###
 DELETE http://localhost:8080/user/10 HTTP/1.1

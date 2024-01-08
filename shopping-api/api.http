@@ -3,16 +3,14 @@ GET http://localhost:8082/shopping HTTP/1.1
 ###
 POST http://localhost:8082/shopping HTTP/1.1
 Content-Type: application/json
-key: 10b462ae-652a-4ad6-bfe4-e8f97fd901a9
+key: 1519b941-de3e-4a3d-a699-a150598cb521
 
 {
   "userIdentifier":"12345678910",
-  "total": 200,
-  "date": "2019-11-17T21:04:19.828+0000",
-  "itens":[
+  "items":[
     {
-      "productIdentifier":"video-game",
-      "price": 2001.0
+      "productIdentifier":"tv",
+      "amount": 2
     }
   ]
 }

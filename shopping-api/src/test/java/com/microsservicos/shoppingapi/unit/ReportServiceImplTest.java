@@ -61,9 +61,9 @@ public class ReportServiceImplTest {
 
   @Test
   public void getShopByFiltersWithAllArgsNotNull(){
-    when(shopRepository.getShopByFilters(any(), any(), any())).thenReturn(List.of(ORDER_1));
+    when(shopRepository.retrieveShopsByDateAndTotal(any(), any(), any())).thenReturn(List.of(ORDER_1));
 
-    List<ShopOutputDto> result = reportService.getShopByFilters(date.toLocalDate(), date.toLocalDate(), 100.0f);
+    List<ShopOutputDto> result = reportService.retrieveShopsByDateAndMinimumTotal(date.toLocalDate(), date.toLocalDate(), 100.0f);
 
     assertThat(result).extracting("userIdentifier", "total", "date", "itens")
     .contains(new Tuple("ABC123",10.0,date, List.of(ITEM_1_DTO, ITEM_2_DTO)));
@@ -71,14 +71,14 @@ public class ReportServiceImplTest {
 
   @Test
   public void getShopByFiltersWithStartNull(){
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> reportService.getShopByFilters(null, date.toLocalDate(), 100.0f));
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> reportService.retrieveShopsByDateAndMinimumTotal(null, date.toLocalDate(), 100.0f));
   }
 
   @Test
   public void getShopByFiltersWithEndNull(){
-    when(shopRepository.getShopByFilters(any(), any(), any())).thenReturn(List.of(ORDER_1));
+    when(shopRepository.retrieveShopsByDateAndTotal(any(), any(), any())).thenReturn(List.of(ORDER_1));
 
-    List<ShopOutputDto> result = reportService.getShopByFilters(date.toLocalDate(), null, 100.0f);
+    List<ShopOutputDto> result = reportService.retrieveShopsByDateAndMinimumTotal(date.toLocalDate(), null, 100.0f);
 
     assertThat(result).extracting("userIdentifier", "total", "date", "itens")
     .contains(new Tuple("ABC123",10.0,date, List.of(ITEM_1_DTO, ITEM_2_DTO)));
@@ -86,9 +86,9 @@ public class ReportServiceImplTest {
 
   @Test
   public void getShopByFiltersWithMinNull(){
-    when(shopRepository.getShopByFilters(any(), any(), any())).thenReturn(List.of(ORDER_1));
+    when(shopRepository.retrieveShopsByDateAndTotal(any(), any(), any())).thenReturn(List.of(ORDER_1));
 
-    List<ShopOutputDto> result = reportService.getShopByFilters(date.toLocalDate(), date.toLocalDate(), null);
+    List<ShopOutputDto> result = reportService.retrieveShopsByDateAndMinimumTotal(date.toLocalDate(), date.toLocalDate(), null);
 
     assertThat(result).extracting("userIdentifier", "total", "date", "itens")
     .contains(new Tuple("ABC123",10.0,date, List.of(ITEM_1_DTO, ITEM_2_DTO)));
@@ -98,25 +98,25 @@ public class ReportServiceImplTest {
   public void getReportByDateWithAllArgsNotNull(){
     ReportDto expected = new ReportDto(10L, 100.0, 100.0);
 
-    when(shopRepository.getReportByDate(any(), any())).thenReturn(expected);
+    when(shopRepository.generateReportByDate(any(), any())).thenReturn(expected);
 
-    ReportDto result = reportService.getReportByDate(date.toLocalDate(), date.toLocalDate());
+    ReportDto result = reportService.generateReportByDateRange(date.toLocalDate(), date.toLocalDate());
 
     assertThat(result).isEqualTo(expected);
   }
 
   @Test
   public void getReportByDateWithStartNull(){
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> reportService.getReportByDate(null, date.toLocalDate()));
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> reportService.generateReportByDateRange(null, date.toLocalDate()));
   }
 
   @Test
   public void getReportByDateWithEndNull(){
     ReportDto expected = new ReportDto(10L, 100.0, 100.0);
 
-    when(shopRepository.getReportByDate(any(), any())).thenReturn(expected);
+    when(shopRepository.generateReportByDate(any(), any())).thenReturn(expected);
 
-    ReportDto result = reportService.getReportByDate(date.toLocalDate(), null);
+    ReportDto result = reportService.generateReportByDateRange(date.toLocalDate(), null);
 
     assertThat(result).isEqualTo(expected);
   }

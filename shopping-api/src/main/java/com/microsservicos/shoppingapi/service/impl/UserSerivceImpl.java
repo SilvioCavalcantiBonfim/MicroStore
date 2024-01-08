@@ -1,11 +1,11 @@
 package com.microsservicos.shoppingapi.service.impl;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
+import org.springframework.http.HttpStatus;
 
 import com.microsservicos.dto.UserOutputDto;
 import com.microsservicos.exception.InvalidCpfLengthException;
@@ -15,42 +15,30 @@ import com.microsservicos.shoppingapi.service.UserService;
 @Service
 public class UserSerivceImpl implements UserService {
 
-  private final String userUrl;
-  private final RestTemplate restTemplate;
+  private final RestClient userClient;
 
   public UserSerivceImpl(
-    @Value("${USER_API_URL:http://localhost:8080/user}") String userUrl,
-    RestTemplate restTemplate
-  ) {
-    this.userUrl = userUrl;
-    this.restTemplate = restTemplate;
+      @Qualifier("userClient") RestClient userClient) {
+    this.userClient = userClient;
   }
 
   @Override
-  public UserOutputDto getUserByCpf(String cpf, String key) {
+  public UserOutputDto retrieveUserByCpf(String cpf, String key) {
     try {
-      return fetchUserByCpfAndKey(cpf, key);
-    } catch (HttpClientErrorException.NotFound e) {
-      throw new UserNotFoundException();
-    }catch (HttpClientErrorException.UnprocessableEntity e){
-      throw new InvalidCpfLengthException();
-    }catch (Exception e){
-      throw new RuntimeException();
+      return fetchUserDetailsByCpfAndKey(cpf, key);
+    } catch (RestClientResponseException e) {
+      switch (e.getStatusCode()) {
+        case HttpStatus.NOT_FOUND -> throw new UserNotFoundException();
+        case HttpStatus.UNPROCESSABLE_ENTITY -> throw new InvalidCpfLengthException();
+        default -> throw new RuntimeException(e.getMessage());
+      }
     }
 
   }
 
-  private UserOutputDto fetchUserByCpfAndKey(String cpf, String key) {
-    String url = buildUserUrlWithCpfAndKey(cpf, key);
-    System.out.println(url);
-    ResponseEntity<UserOutputDto> response = restTemplate.getForEntity(url, UserOutputDto.class);
-    return response.getBody();
+  private UserOutputDto fetchUserDetailsByCpfAndKey(String cpf, String key) {
+    UserOutputDto body = userClient.get().uri(String.format("/user/cpf/%s", cpf)).header("key", key).accept(MediaType.APPLICATION_JSON)
+        .retrieve().body(UserOutputDto.class);
+    return body;
   }
-
-  private String buildUserUrlWithCpfAndKey(String cpf, String key) {
-    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/cpf/%s", userUrl, cpf));
-    builder.queryParam("key", key);
-    return builder.toUriString();
-  }
-
 }
